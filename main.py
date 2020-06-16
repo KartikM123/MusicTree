@@ -16,6 +16,7 @@ def initRatings():
     global ratings
     for p in QuestionSet:
         ratings[p] = 0.0
+
 def readQuestion(q):
     ans = 0
     while (ans < 1 or ans > 5):
@@ -27,6 +28,7 @@ def readQuestion(q):
         if (ans < 1 or ans > 5):
             print("Invalid input, please try again")
     return ans
+
 def askQuestions():
     global QuestionSet
     global ratings
@@ -45,17 +47,20 @@ def askQuestions():
             print(ratings[field], ans)
             ratings[field] = (ratings[field]*(c-1) + ans) / c
             print(ratings[field])
+
 def thresholdName(field, rating):
     if (rating > 2.5):
         return str(QuestionSet[field]["Positive"])
     else: 
         return str(QuestionSet[field]["Negative"])
+
 def readRatings():
     global classifications
     print("Ratings")
     for p in ratings:
         print(p, ratings[p], thresholdName(p, ratings[p]))
         classifications[p] = thresholdName(p, ratings[p])
+
 def recAlbum():
     mapping = {}
     print("------------")
@@ -72,6 +77,7 @@ def recAlbum():
             print(p)
             return
     print("No Match!")
+    
 def printIntro():
     print("------------------------")
     print("Welcome to My Music Tree")
