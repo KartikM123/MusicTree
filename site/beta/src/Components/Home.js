@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 export class HomePage extends React.Component {
     constructor(props) {
@@ -11,7 +10,6 @@ export class HomePage extends React.Component {
             username: "none",
             usernameInput: false
         }
-        this.state=this.props.state;
         this.goHome = this.goHome.bind(this);
         this.updateUsername = this.updateUsername.bind(this);
     }
@@ -43,7 +41,7 @@ export class HomePage extends React.Component {
                 <div>
                     <h1>Welcome to Music Tree</h1>
                     <p>Nice to meet you {this.state.username}</p>
-                    <Link to="/survey">Go to Survey</Link>
+                    <a href="/survey">Go to Survey</a>
                 </div>
             );
         } else {

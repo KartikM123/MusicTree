@@ -13,10 +13,9 @@ class App extends Component {
     return (      
        <BrowserRouter>
         <div>
-          <Navigation />
             <Switch>
              <Route path="/" component={HomePage} exact/>
-             <Route path="/mood" component={Mood_Result}/>
+             <Route path="/moods" component={Mood_Result}/>
              <Route path="/album" component={Album_Result}/>
              <Route path="/survey" component={Survey}/>
            </Switch>

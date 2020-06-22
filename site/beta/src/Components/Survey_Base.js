@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
 import { Link } from 'react-router-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Redirect } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 class ListItem extends React.Component {
     constructor(props){
@@ -124,7 +125,9 @@ class Survey extends React.Component {
             state.initCondition = true;
         });
 
-        document.getElementById("nextButton").innerHTML = "<Link to= \"/mood\">See my Results! </Link>"
+        document.getElementById("nextButton").innerHTML = "See my Results!"
+        // document.getElementById("error").innerHTML = "<Link to= \"/mood\">See my Results! </Link>"
+        this.forceUpdate();
     }
     printRatings(){
         console.log("PRINT RATINGS")
@@ -133,7 +136,13 @@ class Survey extends React.Component {
         }
     }
     clickNext (){
-        let test = true;
+        let test = false;
+        if (this.state.initCondition){
+            console.log("Redirect!");
+            const history = useHistory();
+            history.push('/');
+            return;
+        }
         //ReactDOM.render(<div>"SOOD"</div>, document.getElementById('albumInfo'))
         //this.finishedQuestions();
         if (this.state.clicked == -1){
@@ -198,8 +207,14 @@ class Survey extends React.Component {
         const chosenColor= "blue";
         const notChosenColor="red"
         let albumSrc = document.createElement("div");
+        
         if (this.state.initCondition) {
-            
+            return (
+                <div>
+                    <Link to = {{pathname: '/moods',
+                    state: this.state
+                    }} >See Stats!!</Link>                   </div>
+            );
         } 
 
         return (
@@ -214,10 +229,28 @@ class Survey extends React.Component {
                     })}
                 </ul>
                 <button id= "nextButton" onClick={this.clickNext}> Next </button>
+                <p id="error"></p>        
 
                 <p>{this.state.error}</p>        
             </div>
         )
     }
 }
+
+class FinishedState extends React.Component{
+    constructor(props){
+        super(props)
+        this.state = this.props.state;
+    }
+
+    render() {
+        return (
+            <div>
+                <Link to = {{pathname: '/moods',
+                    state: this.state
+                    }} >See Stats!!</Link>     
+            </div>
+        );
+    }
+};
 export default Survey;

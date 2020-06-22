@@ -1,0 +1,44 @@
+{ 
+    
+    "Mind": {
+        "Positive": "Conscious",
+        "Negative": "Jovial",
+        "Questions": [
+            ["I prefer to listen to music for the lyrics", 0],
+            ["I usually enjoy listening to music that I don’t have to think about ", 1],
+            ["Music that has meaning is extremely important to me ", 0],
+            ["When I listen to music, I often tune out the lyrics and only hear the instrumental", 1]
+        ]
+    },
+    "Energy": {
+        "Positive": "Energetic",
+        "Negative": "Relaxed",
+        "Questions": [
+            ["I only listen to music to pump me up", 0],
+            ["I only listen to that I can relax to ", 1],
+            ["If I could only listen to upbeat music or relaxing music for the rest of my life, I would choose upbeat music ", 0],
+            ["I fall asleep to music often", 1]
+        ]
+    },
+    "Romance": {
+        "Positive": "Romantic",
+        "Negative": "Heartbreak",
+        "Questions": [
+            ["I listen to love songs more than heartbreak songs", 0],
+            ["A song about a break-up speaks more to me than a song about two lovers ", 1],
+            ["Love songs make me happy", 0],
+            ["I listen to music when I’m sad more than I listen to music when I’m happy", 1]
+        ]
+
+    },
+    "Knowledge": {
+        "Positive": "Passionate",
+        "Negative": "Passive",
+        "Questions": [
+            ["I care about the music I listen to more than most", 0],
+            ["I don’t like to be the one to choose what music to listen to ", 1],
+            ["I often share my playlists or songs I’m listening with others", 0],
+            ["I always look to others for what music to listen to", 1]
+        ]
+    }
+}
