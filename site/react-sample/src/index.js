@@ -19,6 +19,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Menu from "components/Menu";
-import HomePage from "./Pages/HomePage";
+import HomePage from "./Pages";
 
 ReactDOM.render(<HomePage/>, document.getElementById("HomePage"))

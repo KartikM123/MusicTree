@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 export class HomePage extends React.Component {
     constructor(props) {
         super(props)
@@ -8,6 +11,7 @@ export class HomePage extends React.Component {
             usernameInput: false
         }
         this.goHome = this.goHome.bind(this);
+        this.updateUsername = this.updateUsername.bind(this);
     }
 
     goHome() {
@@ -19,12 +23,14 @@ export class HomePage extends React.Component {
         this.forceUpdate()
     }
 
-    updateUsername(){
+    updateUsername(e){
         let username = this.state.username;
-        if (this.state.username != null){
+        if (username != null){
             this.setState((state) => {
                 state.usernameInput = true;
             });
+        } else {
+            console.log("Sus!");
         }
         this.forceUpdate();
     }
@@ -35,7 +41,7 @@ export class HomePage extends React.Component {
                 <div>
                     <h1>Welcome to Music Tree</h1>
                     <p>Nice to meet you {this.state.username}</p>
-                    <a href="">Go to Survey</a>
+                    <a href="Survey.html">Go to Survey</a>
                 </div>
             );
         } else {
@@ -43,12 +49,12 @@ export class HomePage extends React.Component {
                 <div>
                     <h1>Welcome to Music Tree</h1>
                     <h2>Please input your username</h2>
-                    <TextInput
-                    ref= "username"
-                    value="Test"
-                    onChangeText={(username) => this.setState((state) => {state.username = username})}
+                    <input
+                    type= "text"
+                    value={this.state.username}
+                    onChange={(event) => this.setState({username: event.target.value})}
                     />
-                    <button>Submit Username</button>
+                    <button onClick={this.updateUsername}>Submit Username</button>
                 </div>
             );
         } 

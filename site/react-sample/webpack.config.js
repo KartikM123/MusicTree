@@ -12,9 +12,11 @@ const htmlPlugins = getFilesFromDir(PAGE_DIR, [".html"]).map( filePath => {
   })
 });
 
-const entry = getFilesFromDir(PAGE_DIR, [".js"]).reduce( (obj, filePath) => {
+let entry  = [];
+entry = getFilesFromDir(PAGE_DIR, [".js"]).reduce( (obj, filePath) => {
   const entryChunkName = filePath.replace(path.extname(filePath), "").replace(PAGE_DIR, "");
   obj[entryChunkName] = `./${filePath}`;
+  
   return obj;
 }, {}); 
 

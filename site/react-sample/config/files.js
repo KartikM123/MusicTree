@@ -15,6 +15,7 @@ function getFilesFromDir(dir, fileTypes) {
       }
     };
     walkDir(dir);
+
     return filesToReturn; 
 }
 
