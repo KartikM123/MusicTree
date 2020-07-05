@@ -30,6 +30,7 @@ router.get('/', function(req, res, next) {
         let body = '';
     };
 
+    console.log("Making request" + url)
     request({headers: headers, url:url, qs:rp}, function(err, response, body) {
         if(err) { console.log(err); return; }
         console.log("Get response: " + response.statusCode);
@@ -41,6 +42,8 @@ router.get('/', function(req, res, next) {
             console.log(`Image result count: ${imageResults.value.length}`);
             console.log(`First image thumbnail url: ${firstImageResult.thumbnailUrl}`);
             console.log(`First image web search url: ${firstImageResult.webSearchUrl}`);
+        } else {
+            res.send('ERROR!')
         }
       });
 

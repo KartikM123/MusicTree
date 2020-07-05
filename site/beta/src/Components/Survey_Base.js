@@ -136,7 +136,7 @@ class Survey extends React.Component {
         }
     }
     clickNext (){
-        let test = false;
+        let test = true;
         if (this.state.initCondition){
             console.log("Redirect!");
             const history = useHistory();
@@ -150,6 +150,7 @@ class Survey extends React.Component {
                 state.error= "Please pick a value!"
             });
         } else {
+
             //update rating scores and append Question
             let newQCount = this.state.questionCount;
             let newType = this.state.questionType;
@@ -165,7 +166,6 @@ class Survey extends React.Component {
                 newQCount = newQCount + 1;
                 nextQuestion = this.state.Questions[this.state.questionType][newQCount]
             } else {
-                //means we must go to the next question type
                 newQCount = 0;
 
                 newTypeCount = newTypeCount + 1;

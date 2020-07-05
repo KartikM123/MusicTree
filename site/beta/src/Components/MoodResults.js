@@ -2,8 +2,106 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
+import avatar_map from '../Question_Data/AvatarMapping.json'
 import { Link } from 'react-router-dom';
+import '../StyleSheets/styles.css'
+function importAll(r) {
+    let images = {};
+    r.keys().map((item, index) => { images[item.replace('../', '')] = r(item); });
+    console.log(images)
+    console.log(r)
+    return images;
+  }
+  
+  const images = importAll(require.context('../pngavatars', false, /\.(png|jpe?g|svg)$/));
+  
 
+class Avatar extends React.Component {
+    constructor (props){
+        super(props)
+        this.state = {
+            avatar: "",
+            avatarImg: ""
+        }
+        this.getAvatar = this.getAvatar.bind(this)
+
+        this.getAvatar();
+    }
+
+    getAvatar () {
+        var albumName  = "";
+        var ratingMoods = this.props.ratingMoods;
+        var usedKeys = ["Mind","Energy","Romance"]
+        for (var avatar in avatar_map){
+            var traits = avatar_map[avatar]["Mood"];
+            console.log(avatar_map[avatar]["Mood"])
+            var isCorrect = true;
+            for (var moods in usedKeys){
+                var mood = ratingMoods[usedKeys[moods]]
+                if (!traits.includes(mood)){
+                    isCorrect = false;
+                }
+            }
+            
+            if (isCorrect){
+                console.log("Success!")
+                this.setState((state) =>
+                {
+                    state.avatar = avatar;
+                    state.avatarImg = avatar_map[avatar]["photoPath"];
+                });
+                console.log(avatar)
+                console.log(this.state)
+                this.forceUpdate();
+                return;
+            }
+        }
+        console.log("Failure!")
+
+        return "No album";
+    }
+
+    render(){
+        var albumName  = "";
+        var ratingMoods = this.props.ratingMoods;
+        var usedKeys = ["Mind","Energy","Romance"]
+        for (var avatar in avatar_map){
+            var traits = avatar_map[avatar]["Mood"];
+            console.log(avatar_map[avatar]["Mood"])
+            var isCorrect = true;
+            for (var moods in usedKeys){
+                var mood = ratingMoods[usedKeys[moods]]
+                if (!traits.includes(mood)){
+                    isCorrect = false;
+                }
+            }
+            
+            if (isCorrect){
+                console.log("Success!")
+                this.setState((state) =>
+                {
+                    state.avatar = avatar;
+                    state.avatarImg = avatar_map[avatar]["photoPath"];
+                });
+                console.log(avatar)
+                console.log(this.state)
+                break;
+            }
+        }
+        let idealImage = avatar_map[avatar]["photoPath"].split("/")[2]
+
+        console.log(idealImage);
+        console.log(images)
+        return (
+            <div>
+                <h1>{avatar}</h1>
+                <img src={images["./" + idealImage]} />
+            </div>
+        )
+        
+    }
+
+}
 class Mood_Result extends React.Component {
     constructor(props) {
         super(props)
@@ -60,20 +158,29 @@ class Mood_Result extends React.Component {
     render() {
         let moods = this.toArr(this.getRatingMoods());
         console.log("What?")
+        let moodsMap = this.getRatingMoods();
 
         return (
-            <div>
-                <ul>
-                    {moods.map((value,index) => {
-                        console.log(value);
-                       return  (<li>
-                           {value}
-                           </li>);
-                    })}
-                </ul>
-                <Link to = {{pathname: '/album',
-                    state: this.state
-                    }} > See Album !!</Link>  
+            <div className="Mood_Result">
+                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+                <div id="moodsContainer">
+                    <ul>
+                        {moods.map((value,index) => {
+                            console.log(value);
+                        return  (<li>
+                            {value}
+                            </li>);
+                        })}
+                    </ul>
+                </div>
+                <div id="avatarContainer">
+                    <Avatar ratingMoods={moodsMap}/>
+                </div>
+                <div id="LinkContainer">
+                    <Link to = {{pathname: '/album',
+                        state: this.state
+                        }} > See Album !!</Link>  
+                </div>
             </div>
         )
 

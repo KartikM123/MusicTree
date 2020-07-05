@@ -63,6 +63,7 @@ class Album_Result extends React.Component {
         ReactDOM.render(<img src={this.state.imgUrl} />, document.getElementById("albumArt"));
         ReactDOM.render(<div>{album}</div>, document.getElementById("albumName"));
     }
+
     finishedQuestions() {
         this.printRatings();
         this.setState((state) => {
@@ -73,6 +74,7 @@ class Album_Result extends React.Component {
         this.getAlbumImg(album);
         return;
     }
+
     getRatingMoods() {
         let ratingMoods = {};
         for (var key in this.state.Ratings){

@@ -1,0 +1,34 @@
+{
+    "The Simp": {
+        "Mood": "Jovial, Relaxed, Heartbreak",
+        "photoPath": "../pngavatars/simp.png"
+    },
+    "The Hustler": {
+        "Mood": "Jovial, Energetic, Heartbreak",
+        "photoPath": "../pngavatars/hustler.png"
+    },
+    "The Chiller": {
+        "Mood": "Jovial, Energetic, Romantic",
+        "photoPath": "../pngavatars/chiller.png"
+    },
+    "The Swag Surfer": {
+        "Mood": "Jovial, Relaxed, Romantic",
+        "photoPath": "../pngavatars/swag_surfer.png"
+    },
+    "The Analyst": {
+        "Mood": "Conscious, Relaxed, Heartbreak",
+        "photoPath": "../pngavatars/analyst.png"
+    },
+    "The Activist": {
+        "Mood": "Conscious, Energetic, Heartbreak",
+        "photoPath": "../pngavatars/activist.png"
+    },
+    "The Student": {
+        "Mood": "Conscious, Relaxed, Romantic",
+        "photoPath": "../pngavatars/student.png"
+    },
+    "The Rager": {
+        "Mood": "Conscious, Energetic, Romantic",
+        "photoPath": "../pngavatars/rager.png"
+    }
+}

@@ -1,0 +1,12 @@
+@font-face {
+    font-family: OpenSans;
+    src: url(https://fonts.googleapis.com/css?family=Open+Sans);
+  }
+  
+.Mood_Result {
+    font-family: 'Open Sans';
+}
+.Mood_Result #moodsContainer {
+    font-family: 'Open Sans';
+    
+}    
