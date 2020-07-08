@@ -96,7 +96,7 @@ class Album_Result extends React.Component {
     async getAlbumImg(albumName){
         var imgSrc = "";
 
-        var url = "http://localhost:9000/testAPI/?albumName=" + albumName.replace(/ /g,'');
+        var url = "http://localhost:9000/getSongs/?keywords=" + albumName.replace(/ /g,'');
         console.log("Start here");
         fetch(url)
         .then(res => res.text())
@@ -108,6 +108,10 @@ class Album_Result extends React.Component {
             });
            this.rerenderWorkflow();    
         });
+        
+    }
+
+    async getAlbumRecs(albumName){
         
     }
 

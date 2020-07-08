@@ -3,12 +3,13 @@ var router = express.Router();
 let https = require('https');
 var request = require('request');
 
+//for second run
 let clientID = '70577384f8d644098aac77105315ed65';
 let clientSecret = '79ce048ea7e44d29958c36f5e6b4efae';
-let host = 'https://accounts.spotify.com';
-let path = '';
-let redirect_uri = 'localhost:3000';
-let access_token = 'NONE'
+
+//for intial run
+let autorization_complete = false;
+var tok;
 
 router.get('/', function(req, res, next) {
     let targetArtist = req.query.targetArtist;
@@ -17,7 +18,7 @@ router.get('/', function(req, res, next) {
 
     console.log("Here")
 
-    if (true || access_token === 'NONE'){
+    if (access_token === 'NONE'){
         //authorize Spofity API
         var authOptions = {
             url: 'https://accounts.spotify.com/api/token',
@@ -36,7 +37,7 @@ router.get('/', function(req, res, next) {
             // use the access token to access the Spotify Web API
             var token = body.access_token;
             access_token = token;
-//            res.send(getRecs(access_token))
+            tok = token;
                 console.log(access_token)
                 let honneID = '0Vw76uk7P8yVtTClWyOhac'
                 
@@ -47,9 +48,6 @@ router.get('/', function(req, res, next) {
                             }
                         };
                         console.log(token)
-                        var headers = {
-                            'Authorization': 'Bearer ' + token
-                        };
                         // recOptions = {
                         //     url: `https://api.spotify.com/v1/recommendations?seed_artists=${honneID}&seed_tracks=0c6xIDDpzE81m2q797ordA&min_energy=0.4&min_popularity=50&market=US`,
                         //     headers: headers
@@ -60,7 +58,13 @@ router.get('/', function(req, res, next) {
                             if (!error && response.statusCode === 200) {
 
                             // use the access token to access the Spotify Web API
-                            res.send(JSON.parse(body)["tracks"])
+                            let total = "";
+                            for (let i in JSON.parse(body)["tracks"][0]){
+                                //console.log(i);
+                                //console.log(JSON.parse(body)["tracks"][0][i])
+                           }
+                            console.log("__");
+                            res.send(JSON.parse(body)["tracks"][0]);
                             } else {
                                 console.log("shit!")
                                 res.send(response.statusCode)
@@ -72,35 +76,42 @@ router.get('/', function(req, res, next) {
         });
     } else {
         //authorization complete
-        res.send(getRecs(access_token))
+        console.log(tok);
+        let j = getRecs(tok, res);
     }
 
 });
 
-function getRecs (access_token) {
+function getRecs (ac, res) {
     let honneID = '0Vw76uk7P8yVtTClWyOhac'
     console.log("Getting recs!")
-    console.log(new Buffer(access_token).toString('base64'))
+    console.log(ac)
     var recOptions = {
-        url: 'https://api.spotify.com/v1/recommendations',
+        url: `https://api.spotify.com/v1/recommendations?seed_artists=${honneID}`,
         headers: {
-            'Authorization': 'Bearer ' + new Buffer(access_token).toString('base64')
-        },
-        form: {
-            seed_artists: (new Buffer(honneID).toString('base64'))
-        },
-        json: true
+            'Authorization': 'Bearer ' + ac
+        }
     };
-
-    request.post(recOptions, function(error, response, body) {
+    console.log("1")
+    request.get(recOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-    
+            console.log("2")
+
         // use the access token to access the Spotify Web API
-        console.log(body.tracks.artists[0]);
-        return (body.tracks)
+        let total = "";
+        for (let i in JSON.parse(body)["tracks"][0]){
+            //console.log(i);
+            //console.log(JSON.parse(body)["tracks"][0][i])
+       }
+       console.log(JSON.parse(body)["tracks"][0])
+
+        console.log("__");
+        
+            res.send(JSON.parse(body)["tracks"][0]);
         } else {
-            console.log(response.statusCode)
-            return (response.statusCode)
+            console.log("3")
+            console.log("shit!")
+            res.send(response.statusCode)
         }
     });
 
