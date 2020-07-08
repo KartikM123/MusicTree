@@ -1,0 +1,80 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import question_map from '../Question_Data/questions.json'
+import album_map from '../Question_Data/AlbumMapping.json'
+import genres_supported from '../Question_Data/SupportedGenres.json'
+
+class Search_Genre extends React.Component {
+    constructor(props){
+        super(props);
+        
+        this.state = {
+            genre: '',
+            albumUrl: '',
+            trackName: '',
+            artist: ''
+        };
+        
+        this.state.genre = this.props.genre;
+        this.getRecContent = this.getRecContent.bind(this)
+
+    }
+
+    componentDidMount(){
+        console.log("Execute Post Render");
+        this.getAlbumContent();
+    }
+
+    getAlbumContent(){
+        var imgSrc = "";
+
+        let targetAlbum = album_map[this.props.album];
+        console.log(targetAlbum);
+
+        var url = `http://localhost:9000/getSongs?artists=${this.targetAlbum["seed_artists"]}&tracks=${this.targetAlbum["seed_tracks"]}&genre=${this.props.genre}`;
+        console.log(url);
+        fetch(url)
+        .then(res => res.text())
+        .then(res => {
+            this.setState((state) => {
+                state.albumUrl = res["images"][0]["url"];
+                state.trackName = res["name"]
+                state.artist = res["artists"][0]["name"]
+            });
+           this.rerenderWorkflow();    
+        });
+    }
+
+    render (){
+        return (
+            <div>
+                <p>{this.state.genre}</p>
+                <p>{this.state.trackName}</p>
+                <p>{this.state.artist}</p>
+                <img src={this.state.albumUrl} />
+            </div>
+        )
+    }
+}
+
+class Explore_Page extends React.Component {
+
+    constructor (props){
+        super(props)
+        this.state = this.props.location.state;
+    }
+
+    render (){
+        let genres = ["acoustic","indie","jazz"];
+        return (
+            <div>
+                {genres.map((value,index) => {
+                       return  <div onClick = {() => {this.clickItem(value)}}>
+                           <Search_Genre genre={value} album={this.state.album}/>
+                        </div>
+                    })}
+            </div>
+        )
+    }
+}
+export default Explore_Page;
