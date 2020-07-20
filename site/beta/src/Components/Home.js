@@ -42,6 +42,7 @@ export class HomePage extends React.Component {
                     <h1>Welcome to Music Tree</h1>
                     <p>Nice to meet you {this.state.username}</p>
                     <a href="/survey">Go to Survey</a>
+                    <a href="/explore">Go to Search Explore Page</a>
                 </div>
             );
         } else {

@@ -54,11 +54,12 @@ async function getRecs (ac, req, res) {
     console.log("Getting recs!")
     console.log(ac)
     var recOptions = {
-        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.seed_artists}&genres=${req.query.genre}&seed_tracks=${req.query.seed_tracks}`,
+        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.artists}&genres=${req.query.genre}&seed_tracks=${req.query.tracks}`,
         headers: {
             'Authorization': 'Bearer ' + ac
         }
     };
+    console.log(recOptions["url"])
     console.log("1")
     request.get(recOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
