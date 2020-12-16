@@ -1,1 +1,24 @@
 @import "MoodResults.css"; 
+@import "Menu.css";
+@import "Survey.css";
+
+div.main 
+{
+    background-color: #9CC7A9;
+    width: 100vw;
+    height: 100vh;
+    animation-name: up;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+}
+
+
+@keyframes up {
+    0% {background-color: #9CC7A9;}
+    50% {background-color: rgb(11, 88, 56);}
+    100% {background-color: #9CC7A9;}
+  }
+  @keyframes down {
+    from {background-color: rgb(11, 88, 56);}
+    to {background-color: #9CC7A9; animation-name: up;}
+  }

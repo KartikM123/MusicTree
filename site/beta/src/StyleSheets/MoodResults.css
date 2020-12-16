@@ -5,8 +5,64 @@
   
 .Mood_Result {
     font-family: 'Open Sans';
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../images/PersonalityBackground.svg');
+    background-size: cover;
+
 }
 .Mood_Result #moodsContainer {
     font-family: 'Open Sans';
     
 }    
+
+.banner
+{
+    text-align: center;
+    height:10%;
+    widows: 100wh;
+    background-color:#9CC7A9;
+
+}
+div.rightSide
+{
+
+    padding-top:2%;
+    width:40%;
+    padding-right:10%;
+    height:fit-content;
+    float: right;
+    display:inline-block;
+    
+}
+
+div.leftSide
+{
+
+    padding-top:2%;
+    width:40%;
+    padding-left:10%;
+    height:fit-content;
+    float:left;
+    display:inline-block;
+
+}
+.personalityHeader
+{
+    text-align: center;
+}
+.avatarName
+{
+    padding-top:2%;
+    text-align:center;
+    padding-bottom:2%;
+    font-family: 'Open Sans';
+    font-size: 40px;
+
+}
+.avatarImg
+{
+    max-width: 100%;
+    height: auto;
+    
+}

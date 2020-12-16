@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
+import { images } from './getImages';
+import '../StyleSheets/styles.css'
 
 export class HomePage extends React.Component {
     constructor(props) {
@@ -36,29 +39,17 @@ export class HomePage extends React.Component {
     }
 
     render () {
-        if (this.state.usernameInput){ 
-            return (
-                <div>
-                    <h1>Welcome to Music Tree</h1>
-                    <p>Nice to meet you {this.state.username}</p>
-                    <a href="/survey">Go to Survey</a>
-                    <a href="/explore">Go to Search Explore Page</a>
+        return (
+            <div className="main" >
+                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+                <img className="logoLarge"src={images["./MainPageLogo.svg"]} />
+                <p className="subtitle">The Music Tree determines your music personality and provides you with new listening recommendations based on your results. 
+                    <br/> <br/> Click below to get started. </p>
+                <div className="center">
+                        <Link className="nextbutton" to="/survey">Go to Survey</Link>
                 </div>
-            );
-        } else {
-            return (
-                <div>
-                    <h1>Welcome to Music Tree</h1>
-                    <h2>Please input your username</h2>
-                    <input
-                    type= "text"
-                    value={this.state.username}
-                    onChange={(event) => this.setState({username: event.target.value})}
-                    />
-                    <button onClick={this.updateUsername}>Submit Username</button>
-                </div>
-            );
-        } 
+            </div>
+        );
     }
 
     

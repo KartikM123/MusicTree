@@ -12,17 +12,19 @@ class Search_Genre extends React.Component {
             genre: "",
             albumUrl: "",
             trackName: "",
-            artist: ""
+            artist: "",
+            album: ""
         };
         
         this.state.genre = this.props.genre;
+        this.state.album = this.props.album;
         this.getRecContent = this.getRecContent.bind(this)
         this.populateGenreOptions = this.populateGenreOptions.bind(this);
         this.updateGenre = this.updateGenre.bind(this);
     }
 
     componentDidMount(){
-        this.populateGenreOptions();
+        this.populateGenreOptions(); 
         this.getRecContent();
     }
     updateGenre(e){
@@ -56,9 +58,9 @@ class Search_Genre extends React.Component {
     getRecContent(){
         var imgSrc = "";
 
-        let targetAlbum = album_map[this.props.album];
+        let targetAlbum = album_map[this.state.album];
         console.log("TARGET")
-        console.log(album_map[this.props.album]["seed_artists"]);
+        console.log(album_map[this.state.album]["seed_artists"]);
         let seed_artists = targetAlbum["seed_artists"]
         let seed_tracks = targetAlbum["seed_tracks"]
         console.log(seed_artists)
@@ -81,11 +83,15 @@ class Search_Genre extends React.Component {
     }
 
     changeGenre(e){
-        this.props.album = e;
+        console.log(e)
+        console.log("E|HE")
+        this.setState((state) => {
+            state.album = e;
+        })
     }
 
     render (){
-        console.log(this.props.album)
+        console.log(this.state.album)
         return (
             <div>
                 <form action="/action_page.php">
@@ -112,6 +118,7 @@ class Explore_Page extends React.Component {
         //this.state = this.props.location.state;
         this.populateAlbumOptions = this.populateAlbumOptions.bind(this);
         this.childElement = React.createRef();
+        this.updateAlbum = this.updateAlbum.bind(this)
     }
 
 
@@ -129,14 +136,15 @@ class Explore_Page extends React.Component {
         });
 
         console.log("updated!")
+        console.log(this.childElement.current)
+        this.childElement.current.changeGenre(newGenre)
         this.forceUpdate();
-        this.childElement.changeGenre(newGenre)
         //this.getRecContent();
     }
 
     populateAlbumOptions(){
         var select = document.getElementById("albumInfo"); 
-        select.addEventListener("change", this.updateGenre);
+        select.addEventListener("change", this.updateAlbum);
         console.log("pouplating!")
         let allOptions = Object.keys(album_map)
         console.log(allOptions)

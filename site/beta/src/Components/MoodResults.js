@@ -94,8 +94,8 @@ class Avatar extends React.Component {
         console.log(images)
         return (
             <div>
-                <h1>{avatar}</h1>
-                <img src={images["./" + idealImage]} />
+                <h1 className= "avatarName" >{avatar}</h1>
+                <img className= "avatarImg" src={images["./" + idealImage]} />
             </div>
         )
         
@@ -162,20 +162,31 @@ class Mood_Result extends React.Component {
 
         return (
             <div className="Mood_Result">
-                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-                <div id="moodsContainer">
-                    <ul>
-                        {moods.map((value,index) => {
-                            console.log(value);
-                        return  (<li>
-                            {value}
-                            </li>);
-                        })}
-                    </ul>
+                <div className="banner">
+                    Banner placeholder
                 </div>
+                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+
+                <div className="leftSide">
+                <p className="personalityHeader"> Your music personality is : </p>
+
                 <div id="avatarContainer">
                     <Avatar ratingMoods={moodsMap}/>
                 </div>
+
+                </div>
+                <div className="rightSide">
+                    <div id="moodsContainer">
+                        <ul>
+                            {moods.map((value,index) => {
+                                console.log(value);
+                            return  (<li>
+                                {value}
+                                </li>);
+                            })}
+                        </ul>
+                    </div>
+                </div> 
                 <div id="LinkContainer">
                     <Link to = {{pathname: '/album',
                         state: this.state

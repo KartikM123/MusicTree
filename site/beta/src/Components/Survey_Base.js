@@ -5,12 +5,16 @@ import album_map from '../Question_Data/AlbumMapping.json'
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { useHistory } from 'react-router-dom';
+import { images } from './getImages';
+import '../StyleSheets/styles.css'
+
 
 class ListItem extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            color:this.props.color
+            color:this.props.color,
+            imgSrc: ''
         }
 
         this.updateColor = this.updateColor.bind(this);
@@ -28,7 +32,7 @@ class ListItem extends React.Component {
     render (){
         return (
             <li>
-                <div onClick={this.updateColor} style={{backgroundColor: this.props.color}} >{this.props.val}</div>
+                <div onClick={this.updateColor} className={this.props.val} style={{backgroundColor: this.props.color}} >{this.props.val}</div>
             </li>
         )
     }
