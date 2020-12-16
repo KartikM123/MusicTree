@@ -24,11 +24,17 @@
     background-color:#9CC7A9;
 
 }
+
+#LinkContainer
+{
+    margin-top:10%;
+    float: right;
+}
 div.rightSide
 {
 
     padding-top:2%;
-    width:40%;
+    width:50%;
     padding-right:10%;
     height:fit-content;
     float: right;
@@ -51,6 +57,7 @@ div.leftSide
 {
     text-align: center;
 }
+
 .avatarName
 {
     padding-top:2%;
@@ -65,4 +72,65 @@ div.leftSide
     max-width: 100%;
     height: auto;
     
+}
+.overlay
+{
+    height:100%;
+    width:100%;
+}
+.overlay:hover
+{
+    background-color: white;
+}
+
+.barcontainer
+{
+    padding-top:5%;
+    width:100%;
+    display: block;
+}
+
+.barCategory
+{
+  display:block;
+  text-align: center;
+  font-family: "Open Sans";
+  font-size: 110%;
+  font-weight: bold;
+}
+
+.description
+{
+    text-align: center;
+    font-weight: lighter;
+    font-size: 90%;
+    font-family: "Open Sans";
+}
+
+.positiveBar
+{
+  float: right;
+  font-size: 80%;
+}
+
+.negativeBar
+{
+  float: left;
+  font-size: 80%;
+}
+
+.bar
+{
+    background-color:white;
+    width:100%;
+    height:fit-content;
+    display:block;
+    margin-top: 3%;
+    border-color: black;
+    border:10px;
+    border-style: solid;
+    border-color: #9CC7A9;
+    border-radius: 5px;
+    border-width:1px;
+    padding:2%;
 }

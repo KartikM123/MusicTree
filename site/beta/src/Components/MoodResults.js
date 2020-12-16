@@ -4,6 +4,7 @@ import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
 import avatar_map from '../Question_Data/AvatarMapping.json'
 import { Link } from 'react-router-dom';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import '../StyleSheets/styles.css'
 function importAll(r) {
     let images = {};
@@ -14,8 +15,80 @@ function importAll(r) {
   }
   
   const images = importAll(require.context('../pngavatars', false, /\.(png|jpe?g|svg)$/));
-  
+class Bar extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
 
+        this.state = {
+            category: this.props.category, //ex. Mind,Energy,Romance
+            rating: this.props.rating, //1-5 value
+            value: this.props.value ,
+            description: question_map[this.props.category]["Description"],
+            color: this.props.color
+        }
+
+    }
+
+    render()
+    {
+        let posColor = "black";
+        let negColor = "black";
+
+        if (question_map[this.state.category]["Positive"] == this.state.rating)
+        {
+            posColor = this.props.color;
+            console.log("HERE!")
+        } else 
+        {
+            negColor = this.props.color;
+            console.log("HERE!")
+        }
+        return (
+        <div className="bar" >
+            <p className = "barCategory">{this.state.category}</p>
+            <p className = "description">{this.state.description} </p>
+            <ProgressBar variant={this.props.variant} now={this.state.value*20} label={`${this.state.value*20}%`} />
+            
+            <div className = "positiveBar"   style = {{color: posColor}}> {question_map[this.state.category]["Positive"]} </div>
+
+            <div className = "negativeBar"  style = {{color: negColor}}> {question_map[this.state.category]["Negative"]} </div>
+            
+            <br />
+        </div>
+        );
+
+    }
+
+}
+class BarContainer extends React.Component
+{
+    constructor(props)
+    {
+        super(props)
+        this.state = {
+            ratingMoods: this.props.ratingMoods
+        }
+        
+    }
+
+    render()
+    {
+        return (
+            <div className="barcontainer">
+                <Bar color="#426F71" variant="info" category="Mind" rating={this.state.ratingMoods["Mind"]["rating"]} value={this.state.ratingMoods["Mind"]["value"]}></Bar>
+
+                <Bar color="#DBAA55" variant= "warning" category="Energy" rating={this.state.ratingMoods["Energy"]["rating"]} value={this.state.ratingMoods["Energy"]["value"]}></Bar>
+
+                <Bar color="#826673" variant="danger" category="Romance" rating={this.state.ratingMoods["Romance"]["rating"]} value={this.state.ratingMoods["Romance"]["value"]}></Bar>
+
+                <Bar color="#9CC7A9" variant="success" category="Knowledge" rating={this.state.ratingMoods["Knowledge"]["rating"]} value={this.state.ratingMoods["Knowledge"]["value"]}></Bar>
+
+            </div>
+        )
+    }
+}
 class Avatar extends React.Component {
     constructor (props){
         super(props)
@@ -95,7 +168,11 @@ class Avatar extends React.Component {
         return (
             <div>
                 <h1 className= "avatarName" >{avatar}</h1>
-                <img className= "avatarImg" src={images["./" + idealImage]} />
+                <div >
+                    <img className= "avatarImg" src={images["./" + idealImage]} />
+                    <div className = "overlay">
+                        </div>
+                </div>
             </div>
         )
         
@@ -135,10 +212,12 @@ class Mood_Result extends React.Component {
     getRatingMoods() {
         let ratingMoods = {};
         for (var key in this.state.Ratings){
+            ratingMoods[key] = {}
+            ratingMoods[key]["value"] = this.state.Ratings[key];
             if (this.state.Ratings[key] > 3){
-                ratingMoods[key] = question_map[key]["Positive"];
+                ratingMoods[key]["rating"] = question_map[key]["Positive"];
             } else {
-                ratingMoods[key] = question_map[key]["Negative"];
+                ratingMoods[key]["rating"] = question_map[key]["Negative"];
             }
         }
         if (this.isEmpty(ratingMoods)){
@@ -165,6 +244,12 @@ class Mood_Result extends React.Component {
                 <div className="banner">
                     Banner placeholder
                 </div>
+                <link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+  crossorigin="anonymous"
+/>
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
 
                 <div className="leftSide">
@@ -176,7 +261,8 @@ class Mood_Result extends React.Component {
 
                 </div>
                 <div className="rightSide">
-                    <div id="moodsContainer">
+                    <BarContainer ratingMoods={moodsMap} />
+                    {/* <div id="moodsContainer">
                         <ul>
                             {moods.map((value,index) => {
                                 console.log(value);
@@ -185,13 +271,14 @@ class Mood_Result extends React.Component {
                                 </li>);
                             })}
                         </ul>
-                    </div>
-                </div> 
+                    </div> */}
+
                 <div id="LinkContainer">
                     <Link to = {{pathname: '/album',
                         state: this.state
                         }} > See Album !!</Link>  
                 </div>
+                </div> 
             </div>
         )
 

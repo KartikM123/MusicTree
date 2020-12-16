@@ -140,7 +140,7 @@ class Survey extends React.Component {
         }
     }
     clickNext (){
-        let test = true;
+        let test = false;
         if (this.state.initCondition){
             console.log("Redirect!");
             const history = useHistory();

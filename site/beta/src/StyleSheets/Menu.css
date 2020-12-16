@@ -39,17 +39,20 @@ a {
     text-align: center;
     width: fit-content;
 
-    border-color: black;
-    border-width: 100px;
+    border-color: #9CC7A9;
+    border-width: 1px;
     border-radius: 5px;
+    border-style:solid
 }
   
   a:hover {
     background-color: #9CC7A9;
     color: white;
+    border-color: white;
     
   }
-  
+
+ 
   /* a:active {
     background-color: black;
   }

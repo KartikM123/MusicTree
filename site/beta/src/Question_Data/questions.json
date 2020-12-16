@@ -3,6 +3,7 @@
     "Mind": {
         "Positive": "Conscious",
         "Negative": "Jovial",
+        "Description": "This trait determines how we listen and interact with the music",
         "Questions": [
             ["I prefer to listen to music for the lyrics", 0],
             ["I usually enjoy listening to music that I don’t have to think about ", 1],
@@ -13,6 +14,7 @@
     "Energy": {
         "Positive": "Energetic",
         "Negative": "Relaxed",
+        "Description": "This trait explores how we prefer tempo",
         "Questions": [
             ["I only listen to music to pump me up", 0],
             ["I only listen to that I can relax to ", 1],
@@ -23,6 +25,7 @@
     "Romance": {
         "Positive": "Romantic",
         "Negative": "Heartbreak",
+        "Description": "This trait determines the musical moods we gravitate towards",
         "Questions": [
             ["I listen to love songs more than heartbreak songs", 0],
             ["A song about a break-up speaks more to me than a song about two lovers ", 1],
@@ -34,6 +37,7 @@
     "Knowledge": {
         "Positive": "Passionate",
         "Negative": "Passive",
+        "Description": "This trait measures what type of music listener you are",
         "Questions": [
             ["I care about the music I listen to more than most", 0],
             ["I don’t like to be the one to choose what music to listen to ", 1],
