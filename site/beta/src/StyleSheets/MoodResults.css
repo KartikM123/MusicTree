@@ -9,6 +9,8 @@
     height: 100vh;
     background-image: url('../images/PersonalityBackground.svg');
     background-size: cover;
+    margin-top: 0 auto;
+    position: absolute;
 
 }
 .Mood_Result #moodsContainer {
@@ -20,9 +22,22 @@
 {
     text-align: center;
     height:10%;
-    widows: 100wh;
+    width: 100wh;
     background-color:#9CC7A9;
 
+
+}
+.bannerText
+{
+    height:100%;
+    width:50%;
+}
+.bannerLogo
+{
+    height: 60%;
+    float:left;
+    padding-top:1%;
+    padding-left:1%;
 }
 
 #LinkContainer
