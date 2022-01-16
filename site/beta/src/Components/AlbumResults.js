@@ -17,7 +17,10 @@ class Album_Result extends React.Component {
         this.rerenderWorkflow = this.rerenderWorkflow.bind(this)
         this.finishedQuestions = this.finishedQuestions.bind(this)
         this.getRatingMoods = this.getRatingMoods.bind(this)
-        this.getAlbum = this.getAlbum.bind(this)
+
+        //used for recommendation engine
+        this.getSeeds = this.getSeeds.bind(this)
+        this.getRecommendations = this.getRecommendations.bind(this)
         this.getAlbumImg = this.getAlbumImg.bind(this)
         this.state = this.props.location.state;
 
@@ -37,16 +40,10 @@ class Album_Result extends React.Component {
         let albumSrc = document.createElement("div");
 
         var ratingMoods = this.getRatingMoods();
-        var allMoods = document.createElement("div");
-        for (var moods in ratingMoods ){
-            var mood = ratingMoods[moods];
-            console.log(ratingMoods[moods]);
-            var newMood = document.createElement("p");
-            allMoods.appendChild(newMood.appendChild(document.createTextNode(mood)));
-        }
 
-        var album = this.getAlbum(ratingMoods);
+        var album = this.getRecommendations(ratingMoods, ["rap", "rnb", "country"]);
         console.log("Album is " + album)
+
         var albumName = document.createElement("div")
         albumName.appendChild(document.createTextNode(album));
         
@@ -70,47 +67,83 @@ class Album_Result extends React.Component {
             state.initCondition = true;
         });
         var ratingMoods = this.getRatingMoods();
-        var album = this.getAlbum(ratingMoods);
-        this.getAlbumImg(album);
+        var album = this.getRecommendations(ratingMoods, ["rap","rnb","country"]);
+       // this.getAlbumImg(album);
         return;
     }
 
     getRatingMoods() {
-        let ratingMoods = {};
+        let ratingMoods = [];
         for (var key in this.state.Ratings){
             if (this.state.Ratings[key] > 3){
-                ratingMoods[key] = question_map[key]["Positive"];
+                ratingMoods.push(question_map[key]["Positive"]);
             } else {
-                ratingMoods[key] = question_map[key]["Negative"];
+                ratingMoods.push(question_map[key]["Negative"]);
             }
         }
-
         return ratingMoods;
     }
-
-    getAlbum(ratingMoods){
-        var albumName  = "";
-        for (var album in album_map){
-            var traits = album_map[album]["traits"];
+    
+    getSeeds(ratingMoods)
+    {
+        var albumName = "";
+        var res = {
+            "seed": "NA",
+            "seed_artists": "",
+            "seed_tracks": ""
+        }
+        for (var album in album_map)
+        {
+            var albumInfo = album_map[album];
+            var traits = albumInfo["traits"];
             var isCorrect = true;
-            for (var moods in ratingMoods){
-                var mood = ratingMoods[moods]
-                if (!traits.includes(mood)){
+            for (var m in ratingMoods)
+            {
+                var moods = ratingMoods[m];
+                console.log(traits + "vs" + moods);
+                if (!traits.includes(moods))
+                {
                     isCorrect = false;
                 }
             }
-            
-            if (isCorrect){
-                return album;
+            if (isCorrect)
+            {
+                console.log("Identified seed album as " + album);
+                res.seed_artists = albumInfo["seed_artists"];
+                res.seed_tracks = albumInfo["seed_tracks"];
+                res.seed = album;
+                return res;
             }
         }
+        console.log("no seeds found!")
+        return res;
+    }
 
+    getRecommendations(ratingMoods, genreSeeds){
+
+        console.log("getting seeds!")
+        var seed = this.getSeeds(ratingMoods);
+
+        if (seed.seed == "NA"){
+            return -1;
+        }
+        var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
+        console.log("Using recommendation engine");
+        fetch(targetURL)
+        .then (res=> res.text())
+        .then(res => {
+            console.log("received message from getSongs " + res);
+            //var resultObject = JSON.parse(res);
+            console.log(res);
+            return "done";
+        })
         return "No album";
     }
 
     async getAlbumImg(albumName){
         var imgSrc = "";
-
+        //TODO: Implement new imaging source
+        return "";
         var url = "http://localhost:9000/testAPI/?albumName=" + albumName.replace(/ /g,'');
         console.log("Start here");
         fetch(url)

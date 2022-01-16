@@ -241,9 +241,10 @@ class Mood_Result extends React.Component {
 
         return (
             <div className="Mood_Result">
-                <div className="banner">
-                    Banner placeholder
-                </div>
+            <div className="banner">
+                <img className="bannerLogo"src={images["./miniLogo.svg"]} />
+                <img className ="bannerText" src ={images["./bText.svg"]} />
+            </div>
                 <link
   rel="stylesheet"
   href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"

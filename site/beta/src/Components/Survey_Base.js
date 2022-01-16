@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
+import genresAll from '../Question_Data/SupportedGenres.json'
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { useHistory } from 'react-router-dom';
@@ -218,7 +219,7 @@ class Survey extends React.Component {
         this.state = {
             Questions: {},
             Ratings: {},
-            error: '',
+            error: false,
             questionType: '',
             currentQuestion: '',
             clicked: -1,
@@ -227,13 +228,18 @@ class Survey extends React.Component {
             questionCount: 0,
             initCondition: false,
             value: 0,
-            imgUrl: 'None!'
+            imgUrl: 'None!',
+            genre: ["","",""],
+            currGenre: 0
         }
 
         this.results =  [-1,-1,-1,-1];
         this.clickN = this.clickN.bind(this);
         this.checkStateDone = this.checkStateDone.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.finalSurveyRender = this.finalSurveyRender.bind(this);
+        this.clickGenre = this.clickGenre.bind(this);
+        this.isActiveGenre = this.isActiveGenre.bind(this);
     }
 
     onChange(q, clicked)
@@ -315,7 +321,7 @@ class Survey extends React.Component {
         console.log("Finished Questions!!");
 
         this.setState((state) => {
-            state.error = "No more questions!";
+            state.error = false;
             state.initCondition = true;
         });
 
@@ -347,7 +353,7 @@ class Survey extends React.Component {
         console.log(this.results);
 
         console.log("next questions")
-        let test = false;
+        let test = true;
         if (this.state.initCondition){
             console.log("Redirect!");
             const history = useHistory();
@@ -358,7 +364,7 @@ class Survey extends React.Component {
         //this.finishedQuestions();
         if (!this.checkStateDone()){
             this.setState((state) => {
-                state.error= "Please pick a value!"
+                state.error= true
             });
         } else {
 
@@ -394,7 +400,7 @@ class Survey extends React.Component {
             this.setState((state) => {
                 state.Questions = state.Questions;
                 state.Ratings = newRatings;
-                state.error = "";
+                state.error = false;
                 state.questionType = newType;
                 state.currentQuestion = state.Questions[newType];
                 state.clicked = -1;
@@ -413,6 +419,128 @@ class Survey extends React.Component {
         this.forceUpdate();
     }
     
+    clickGenre(genre)
+    {
+        console.log("clck!")
+        if (this.isActiveGenre(genre) != "white")
+        {
+            //deactivation workflow
+            var target = 0;
+            switch (this.isActiveGenre(genre)){
+                case "blue":
+                    target = 0;
+                    break;
+                case "green":
+                    target = 1;
+                    break;
+                case "cyan":
+                    target = 2;
+                    break;
+                default:
+                    target = -1;
+                    break;
+            }
+            this.setState((state) => {
+                state.genre[target] = "";
+                state.error = false
+            });
+            
+            if (this.state.currGenre > target)
+            {
+                this.setState((state) => {
+                    state.currGenre = target;
+                });            
+            }
+        } else if (this.state.currGenre > 2)
+        {
+            this.setState((state) => {
+                state.error = true;
+            });
+        } else
+        {
+            var nextGenre = 3;
+            if (this.state.genre[0] == "" && this.state.currGenre != 0)
+            {
+                nextGenre = 0;
+
+            } else if (this.state.genre[1] == "" && this.state.currGenre != 1)
+            {
+                nextGenre = 1;
+            } else if (this.state.genre[2] == "" && this.state.currGenre != 2)
+            {
+                nextGenre = 2;
+            } else {
+                nextGenre = 3;
+            }
+            this.setState((state) => {
+                state.error = false;
+                state.genre[state.currGenre] = genre;
+                state.currGenre = nextGenre;
+            });
+            console.log("here")
+            console.log(this.state.currGenre);
+        }
+        console.log(this.state.genre);
+        this.forceUpdate();
+    }
+
+    isActiveGenre(genre)
+    {
+        if (genre == this.state.genre[0])
+        {
+            return "blue";
+        } else if (genre == this.state.genre[1])
+        {
+            return "green";
+        } else if (genre == this.state.genre[2])
+        {
+            return "cyan";
+        }
+
+        return "white";
+        
+    }
+    finalSurveyRender()
+    {
+        var keyGenres = genresAll["genres"];//[ "classical", "country", "dance", "edm", "folk",  "hip-hop", "indie", "r-n-b", "rock" ]
+
+        var finalPart =  <a>See Stats!!</a>;
+        if (this.state.currGenre > 2){
+            finalPart =  <Link to = {{pathname: '/moods', state: this.state}} >See Stats!!</Link>  
+        }
+
+        var root = this;
+
+        var finalQHeadliner = <div className="finalQ"> Pick your three favorite genres. </div>;
+        if (this.state.error)
+        {
+            finalQHeadliner = <div className="finalQ"> Pick your <b>three</b> favorite genres. </div>;
+        }
+        return (
+            <div className="Mood_Result">
+                <div className="banner">
+                    <img className="bannerLogo"src={images["./miniLogo.svg"]} />
+                    <img className ="bannerText" src ={images["./bText.svg"]} />
+                </div>     
+                    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+                <div className="almostDone"> You're almost done... </div>
+                {finalQHeadliner}
+                <div className = "genreScroll">
+                {
+                    keyGenres.map(function(genre){
+                        return (<div className="genreWrapper">
+                            <a onClick={() => root.clickGenre(genre)} className="genreOption" style={{backgroundColor :root.isActiveGenre(genre), color: root.isActiveGenre(genre)== "white" ? "black" : "white"}} key={genre}> {genre} </a>
+                            </div>)
+                    })
+                }
+                </div>
+                <div className="centerDiv">
+                    {finalPart}
+                </div>                            
+            </div>
+        );
+    }
+
     render(){
 
         const range = [1,2,3,4,5];
@@ -421,13 +549,7 @@ class Survey extends React.Component {
         let albumSrc = document.createElement("div");
         
         if (this.state.initCondition) {
-            return (
-                <div>
-                    <Link to = {{pathname: '/moods',
-                    state: this.state
-                    }} >See Stats!!</Link>                  
-                </div>
-            );
+            return this.finalSurveyRender();
         } 
         console.log("RENDERING!");
         console.log(this.state);
