@@ -15,6 +15,7 @@ class Album_Result extends React.Component {
             imgUrl: 'None!'
         }
         this.rerenderWorkflow = this.rerenderWorkflow.bind(this);
+        this.renderChild = this.renderChild.bind(this)
 
         //used for recommendation engine
         this.getSeeds = this.getSeeds.bind(this)
@@ -26,9 +27,9 @@ class Album_Result extends React.Component {
     }
 
     async rerenderWorkflow(){
-        let albumSrc = document.createElement("div");
-
         var ratingMoods = this.getRatingMoods();
+
+        var genres = ["rap", "rnb", "country"];
 
         var albumRec = await this.getRecommendations(ratingMoods, ["rap", "rnb", "country"]);
         console.log(albumRec["name"])
@@ -40,6 +41,27 @@ class Album_Result extends React.Component {
 
         ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
         ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
+
+        await this.renderChild(1, genres);
+        await this.renderChild(2, genres);
+        await this.renderChild(3, genres);
+    }
+
+    async renderChild(num, genres)
+    {
+
+
+        var ratingMoods = this.getRatingMoods();
+        var albumRec = await this.getRecommendations(ratingMoods, genres[num-1]);
+        console.log(albumRec["name"])
+        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
+        console.log("Album is " + recommendation);
+
+        var imgUrl = await this.getAlbumImg(albumRec);
+        console.log(imgUrl);
+
+        ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt" + num));
+    ReactDOM.render(<div>{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
     }
 
     getRatingMoods() {
@@ -129,6 +151,16 @@ class Album_Result extends React.Component {
                 </div>     
                 <div id= "albumName"> </div>
                 <div id="albumArt"></div>   
+
+                <div id= "albumName1"> </div>
+                <div id="albumArt1"></div>   
+
+                <div id= "albumName2"> </div>
+                <div id="albumArt2"></div>   
+
+
+                <div id= "albumName3"> </div>
+                <div id="albumArt3"></div>   
             </div>
         )
     }
