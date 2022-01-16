@@ -14,9 +14,7 @@ class Album_Result extends React.Component {
             initCondition: false,
             imgUrl: 'None!'
         }
-        this.rerenderWorkflow = this.rerenderWorkflow.bind(this)
-        this.finishedQuestions = this.finishedQuestions.bind(this)
-        this.getRatingMoods = this.getRatingMoods.bind(this)
+        this.rerenderWorkflow = this.rerenderWorkflow.bind(this);
 
         //used for recommendation engine
         this.getSeeds = this.getSeeds.bind(this)
@@ -27,49 +25,21 @@ class Album_Result extends React.Component {
 
     }
 
-    printRatings(){
-
-        console.log("Moods");
-        console.log("PRINT RATINGS")
-        for (var key in this.state.Ratings){
-            console.log(key +": " + this.state.Ratings[key]);
-        }
-    }
-
-    rerenderWorkflow(){
+    async rerenderWorkflow(){
         let albumSrc = document.createElement("div");
 
         var ratingMoods = this.getRatingMoods();
 
-        var album = this.getRecommendations(ratingMoods, ["rap", "rnb", "country"]);
-        console.log("Album is " + album)
+        var albumRec = await this.getRecommendations(ratingMoods, ["rap", "rnb", "country"]);
+        console.log(albumRec["name"])
+        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
+        console.log("Album is " + recommendation);
 
-        var albumName = document.createElement("div")
-        albumName.appendChild(document.createTextNode(album));
-        
-        var img = document.createElement("img");
-        console.log("img src is " + this.state.imgUrl);
+        var imgUrl = await this.getAlbumImg(albumRec);
+        console.log(imgUrl);
 
-        img.src = this.state.imgUrl;
-        
-        // albumSrc.appendChild(allMoods);
-        // albumSrc.appendChild(albumName);
-        // albumSrc.appendChild(img);
-
-        console.log(albumSrc);
-        ReactDOM.render(<img src={this.state.imgUrl} />, document.getElementById("albumArt"));
-        ReactDOM.render(<div>{album}</div>, document.getElementById("albumName"));
-    }
-
-    finishedQuestions() {
-        this.printRatings();
-        this.setState((state) => {
-            state.initCondition = true;
-        });
-        var ratingMoods = this.getRatingMoods();
-        var album = this.getRecommendations(ratingMoods, ["rap","rnb","country"]);
-       // this.getAlbumImg(album);
-        return;
+        ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
+        ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
     }
 
     getRatingMoods() {
@@ -119,7 +89,7 @@ class Album_Result extends React.Component {
         return res;
     }
 
-    getRecommendations(ratingMoods, genreSeeds){
+    async getRecommendations(ratingMoods, genreSeeds){
 
         console.log("getting seeds!")
         var seed = this.getSeeds(ratingMoods);
@@ -129,39 +99,28 @@ class Album_Result extends React.Component {
         }
         var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
         console.log("Using recommendation engine");
-        fetch(targetURL)
-        .then (res=> res.text())
-        .then(res => {
-            console.log("received message from getSongs " + res);
-            //var resultObject = JSON.parse(res);
-            console.log(res);
-            return "done";
-        })
-        return "No album";
-    }
-
-    async getAlbumImg(albumName){
-        var imgSrc = "";
-        //TODO: Implement new imaging source
-        return "";
-        var url = "http://localhost:9000/testAPI/?albumName=" + albumName.replace(/ /g,'');
-        console.log("Start here");
-        fetch(url)
-        .then(res => res.text())
-        .then(res => {
-            imgSrc = res;
-            console.log("ASYNC RETURN" + imgSrc);
-            this.setState((state) => {
-                state.imgUrl = imgSrc;
-            });
-           this.rerenderWorkflow();    
-        });
+        var res =  await fetch(targetURL);
         
+        var resultObject = await res.json();
+        
+        var recommendation = resultObject["name"] + " by " + resultObject["artists"][0]["name"];
+        console.log("recommending " + recommendation);
+        return resultObject;
     }
 
-    componentDidMount(){
+    async getAlbumImg(albumRec){
+        var trackID = albumRec["id"]
+        var targetURL = "http://localhost:9000/getSongs/getTrackPhoto?track_id="+trackID;
+        console.log("Using recommendation engine");
+        var res =  await fetch(targetURL);
+        
+        var resultText = await res.text();
+        return resultText;
+    }
+        
+    async componentDidMount(){
         console.log("Execute Post Render");
-        this.finishedQuestions();
+        await this.rerenderWorkflow();
     }
     render() {
         return (
