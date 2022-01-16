@@ -16,6 +16,7 @@ class Album_Result extends React.Component {
         }
         this.rerenderWorkflow = this.rerenderWorkflow.bind(this);
         this.renderChild = this.renderChild.bind(this)
+        this.reseedOnClick = this.reseedOnClick.bind(this)
 
         //used for recommendation engine
         this.getSeeds = this.getSeeds.bind(this)
@@ -26,13 +27,27 @@ class Album_Result extends React.Component {
 
     }
 
-    async rerenderWorkflow(){
+    async rerenderWorkflow()
+    {
         var ratingMoods = this.getRatingMoods();
+        console.log("getting seeds!")
+        var seed = this.getSeeds(ratingMoods);
+
+        this.renderWithSeeds(ratingMoods, seed, undefined);
+    }
+
+
+    async renderWithSeeds(ratingMoods, seed, albumRec)
+    {
 
         var genres = ["rap", "rnb", "country"];
-
-        var albumRec = await this.getRecommendations(ratingMoods, ["rap", "rnb", "country"]);
-        console.log(albumRec["name"])
+        console.log("getting seeds!")
+        var seed = this.getSeeds(ratingMoods);
+        if (albumRec == undefined)
+        {
+            albumRec = await this.getRecommendations(seed,ratingMoods, ["rap", "rnb", "country"]);
+            console.log(albumRec["name"]);
+        }
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
         console.log("Album is " + recommendation);
 
@@ -41,18 +56,18 @@ class Album_Result extends React.Component {
 
         ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
         ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
-
-        await this.renderChild(1, genres);
-        await this.renderChild(2, genres);
-        await this.renderChild(3, genres);
+ 
+        await this.renderChild(seed, 1, genres, albumRec);
+        await this.renderChild(seed, 2, genres, albumRec);
+        await this.renderChild(seed, 3, genres, albumRec);
     }
 
-    async renderChild(num, genres)
+    async renderChild(seed, num, genres, parentRec)
     {
 
 
         var ratingMoods = this.getRatingMoods();
-        var albumRec = await this.getRecommendations(ratingMoods, genres[num-1]);
+        var albumRec = await this.getRecommendations(seed, ratingMoods, genres[num-1]);
         console.log(albumRec["name"])
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
         console.log("Album is " + recommendation);
@@ -60,8 +75,24 @@ class Album_Result extends React.Component {
         var imgUrl = await this.getAlbumImg(albumRec);
         console.log(imgUrl);
 
-        ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt" + num));
-    ReactDOM.render(<div>{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
+        ReactDOM.render(<img onClick={() => {this.reseedOnClick(parentRec, albumRec)} } src={imgUrl} />, document.getElementById("albumArt" + num));
+        ReactDOM.render(<div >{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
+    }
+
+    reseedOnClick = (parentRec, albumRec) =>
+    {
+        var seed = {
+            "seed": albumRec["name"],
+            "seed_artists": "",
+            "seed_tracks": ""
+        }        
+
+        var ratingMoods = this.getRatingMoods();
+        
+        seed.seed_artists = parentRec["artists"][0]["id"] + "," + albumRec["artists"][0]["id"];
+        seed.seed_tracks = parentRec["id"] + "," + albumRec["id"];
+
+        this.renderWithSeeds(ratingMoods, seed, albumRec);
     }
 
     getRatingMoods() {
@@ -111,10 +142,7 @@ class Album_Result extends React.Component {
         return res;
     }
 
-    async getRecommendations(ratingMoods, genreSeeds){
-
-        console.log("getting seeds!")
-        var seed = this.getSeeds(ratingMoods);
+    async getRecommendations(seed, ratingMoods, genreSeeds){
 
         if (seed.seed == "NA"){
             return -1;
