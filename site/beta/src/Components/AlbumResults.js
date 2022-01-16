@@ -14,121 +14,163 @@ class Album_Result extends React.Component {
             initCondition: false,
             imgUrl: 'None!'
         }
-        this.rerenderWorkflow = this.rerenderWorkflow.bind(this)
-        this.finishedQuestions = this.finishedQuestions.bind(this)
-        this.getRatingMoods = this.getRatingMoods.bind(this)
-        this.getAlbum = this.getAlbum.bind(this)
+        this.rerenderWorkflow = this.rerenderWorkflow.bind(this);
+        this.renderChild = this.renderChild.bind(this)
+        this.reseedOnClick = this.reseedOnClick.bind(this)
+
+        //used for recommendation engine
+        this.getSeeds = this.getSeeds.bind(this)
+        this.getRecommendations = this.getRecommendations.bind(this)
         this.getAlbumImg = this.getAlbumImg.bind(this)
         this.state = this.props.location.state;
 
 
     }
 
-    printRatings(){
+    async rerenderWorkflow()
+    {
+        var ratingMoods = this.getRatingMoods();
+        console.log("getting seeds!")
+        var seed = this.getSeeds(ratingMoods);
 
-        console.log("Moods");
-        console.log("PRINT RATINGS")
-        for (var key in this.state.Ratings){
-            console.log(key +": " + this.state.Ratings[key]);
-        }
+        this.renderWithSeeds(ratingMoods, seed, undefined);
     }
 
-    rerenderWorkflow(){
-        let albumSrc = document.createElement("div");
 
-        var ratingMoods = this.getRatingMoods();
-        var allMoods = document.createElement("div");
-        for (var moods in ratingMoods ){
-            var mood = ratingMoods[moods];
-            console.log(ratingMoods[moods]);
-            var newMood = document.createElement("p");
-            allMoods.appendChild(newMood.appendChild(document.createTextNode(mood)));
+    async renderWithSeeds(ratingMoods, seed, albumRec)
+    {
+
+        var genres = ["rap", "rnb", "country"];
+        console.log("getting seeds!")
+        var seed = this.getSeeds(ratingMoods);
+        if (albumRec == undefined)
+        {
+            albumRec = await this.getRecommendations(seed,ratingMoods, ["rap", "rnb", "country"]);
+            console.log(albumRec["name"]);
         }
+        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
+        console.log("Album is " + recommendation);
 
-        var album = this.getAlbum(ratingMoods);
-        console.log("Album is " + album)
-        var albumName = document.createElement("div")
-        albumName.appendChild(document.createTextNode(album));
-        
-        var img = document.createElement("img");
-        console.log("img src is " + this.state.imgUrl);
+        var imgUrl = await this.getAlbumImg(albumRec);
+        console.log(imgUrl);
 
-        img.src = this.state.imgUrl;
-        
-        // albumSrc.appendChild(allMoods);
-        // albumSrc.appendChild(albumName);
-        // albumSrc.appendChild(img);
-
-        console.log(albumSrc);
-        ReactDOM.render(<img src={this.state.imgUrl} />, document.getElementById("albumArt"));
-        ReactDOM.render(<div>{album}</div>, document.getElementById("albumName"));
+        ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
+        ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
+ 
+        await this.renderChild(seed, 1, genres, albumRec);
+        await this.renderChild(seed, 2, genres, albumRec);
+        await this.renderChild(seed, 3, genres, albumRec);
     }
 
-    finishedQuestions() {
-        this.printRatings();
-        this.setState((state) => {
-            state.initCondition = true;
-        });
+    async renderChild(seed, num, genres, parentRec)
+    {
+
+
         var ratingMoods = this.getRatingMoods();
-        var album = this.getAlbum(ratingMoods);
-        this.getAlbumImg(album);
-        return;
+        var albumRec = await this.getRecommendations(seed, ratingMoods, genres[num-1]);
+        console.log(albumRec["name"])
+        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
+        console.log("Album is " + recommendation);
+
+        var imgUrl = await this.getAlbumImg(albumRec);
+        console.log(imgUrl);
+
+        ReactDOM.render(<img onClick={() => {this.reseedOnClick(parentRec, albumRec)} } src={imgUrl} />, document.getElementById("albumArt" + num));
+        ReactDOM.render(<div >{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
+    }
+
+    reseedOnClick = (parentRec, albumRec) =>
+    {
+        var seed = {
+            "seed": albumRec["name"],
+            "seed_artists": "",
+            "seed_tracks": ""
+        }        
+
+        var ratingMoods = this.getRatingMoods();
+        
+        seed.seed_artists = parentRec["artists"][0]["id"] + "," + albumRec["artists"][0]["id"];
+        seed.seed_tracks = parentRec["id"] + "," + albumRec["id"];
+
+        this.renderWithSeeds(ratingMoods, seed, albumRec);
     }
 
     getRatingMoods() {
-        let ratingMoods = {};
+        let ratingMoods = [];
         for (var key in this.state.Ratings){
             if (this.state.Ratings[key] > 3){
-                ratingMoods[key] = question_map[key]["Positive"];
+                ratingMoods.push(question_map[key]["Positive"]);
             } else {
-                ratingMoods[key] = question_map[key]["Negative"];
+                ratingMoods.push(question_map[key]["Negative"]);
             }
         }
-
         return ratingMoods;
     }
-
-    getAlbum(ratingMoods){
-        var albumName  = "";
-        for (var album in album_map){
-            var traits = album_map[album]["traits"];
+    
+    getSeeds(ratingMoods)
+    {
+        var albumName = "";
+        var res = {
+            "seed": "NA",
+            "seed_artists": "",
+            "seed_tracks": ""
+        }
+        for (var album in album_map)
+        {
+            var albumInfo = album_map[album];
+            var traits = albumInfo["traits"];
             var isCorrect = true;
-            for (var moods in ratingMoods){
-                var mood = ratingMoods[moods]
-                if (!traits.includes(mood)){
+            for (var m in ratingMoods)
+            {
+                var moods = ratingMoods[m];
+                console.log(traits + "vs" + moods);
+                if (!traits.includes(moods))
+                {
                     isCorrect = false;
                 }
             }
-            
-            if (isCorrect){
-                return album;
+            if (isCorrect)
+            {
+                console.log("Identified seed album as " + album);
+                res.seed_artists = albumInfo["seed_artists"];
+                res.seed_tracks = albumInfo["seed_tracks"];
+                res.seed = album;
+                return res;
             }
         }
-
-        return "No album";
+        console.log("no seeds found!")
+        return res;
     }
 
-    async getAlbumImg(albumName){
-        var imgSrc = "";
+    async getRecommendations(seed, ratingMoods, genreSeeds){
 
-        var url = "http://localhost:9000/testAPI/?albumName=" + albumName.replace(/ /g,'');
-        console.log("Start here");
-        fetch(url)
-        .then(res => res.text())
-        .then(res => {
-            imgSrc = res;
-            console.log("ASYNC RETURN" + imgSrc);
-            this.setState((state) => {
-                state.imgUrl = imgSrc;
-            });
-           this.rerenderWorkflow();    
-        });
+        if (seed.seed == "NA"){
+            return -1;
+        }
+        var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
+        console.log("Using recommendation engine");
+        var res =  await fetch(targetURL);
         
+        var resultObject = await res.json();
+        
+        var recommendation = resultObject["name"] + " by " + resultObject["artists"][0]["name"];
+        console.log("recommending " + recommendation);
+        return resultObject;
     }
 
-    componentDidMount(){
+    async getAlbumImg(albumRec){
+        var trackID = albumRec["id"]
+        var targetURL = "http://localhost:9000/getSongs/getTrackPhoto?track_id="+trackID;
+        console.log("Using recommendation engine");
+        var res =  await fetch(targetURL);
+        
+        var resultText = await res.text();
+        return resultText;
+    }
+        
+    async componentDidMount(){
         console.log("Execute Post Render");
-        this.finishedQuestions();
+        await this.rerenderWorkflow();
     }
     render() {
         return (
@@ -137,6 +179,16 @@ class Album_Result extends React.Component {
                 </div>     
                 <div id= "albumName"> </div>
                 <div id="albumArt"></div>   
+
+                <div id= "albumName1"> </div>
+                <div id="albumArt1"></div>   
+
+                <div id= "albumName2"> </div>
+                <div id="albumArt2"></div>   
+
+
+                <div id= "albumName3"> </div>
+                <div id="albumArt3"></div>   
             </div>
         )
     }

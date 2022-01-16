@@ -15,11 +15,16 @@ let genre = "acoustic"
 let authorization_complete = false;
 var token;
 
-router.get('/', function(req, res, next) {
-    console.log(req.query.seed_artists);
-    console.log(req.query.seed_tracks);
-    getAuthorization(getRecs,req,  res);
+router.get('/getTrackPhoto', function(req, res, next) {
+    getAuthorization((ac) => { getAlbumPhoto(ac, req, res)})
 });
+
+router.get('/', function(req, res, next) {
+    console.log("Artists" + req.query.seed_artists);
+    console.log(req.query.seed_tracks);
+    getAuthorization((ac) => {getRecs(ac, req, res)},req,  res);
+});
+
 
 
 async function getAuthorization (callback, req, res){
@@ -42,7 +47,7 @@ async function getAuthorization (callback, req, res){
             // use the access token to access the Spotify Web API
             console.log("Successfully Authorized!")
             console.log(body.access_token);
-            return callback(body.access_token, req, res);
+            return callback(body.access_token);
         } else {
             console.log(response.statusCode, " Failed Auth");
             return null;
@@ -50,11 +55,35 @@ async function getAuthorization (callback, req, res){
     });
 }
 
+async function getAlbumPhoto(ac, req, res){
+    console.log("Getting album Photo!");
+    var recOptions = {
+        url: `https://api.spotify.com/v1/tracks/${req.query.track_id}`,
+        headers: {
+            'Authorization': 'Bearer ' + ac
+        },
+    };
+    console.log(recOptions["url"])
+    request.get(recOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200)
+        {
+            var formattedBody = JSON.parse(body);
+            console.log(formattedBody);
+            res.send(formattedBody["album"]["images"][0]["url"]);
+            return;
+        } 
+            res.send("API failure");
+    });
+    return;
+}
+
 async function getRecs (ac, req, res) {
     console.log("Getting recs!")
+    console.log("Artits" + req.query.seed_artists);
+    console.log(req.query.seed_tracks);
     console.log(ac)
     var recOptions = {
-        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.artists}&genres=${req.query.genre}&seed_tracks=${req.query.tracks}`,
+        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.seed_artists}&genres=${req.query.seed_genres}&seed_tracks=${req.query.seed_tracks}`,
         headers: {
             'Authorization': 'Bearer ' + ac
         }
@@ -73,7 +102,7 @@ async function getRecs (ac, req, res) {
        }
             console.log(JSON.parse(body)["tracks"][0])
 
-            console.log("__");
+            console.log("Returning here!__");
         
             parseBestResult(req, res, JSON.parse(body));
         } else {

@@ -81,8 +81,9 @@
 .q
 {
     font-family: "Open Sans";
-    height:10%;
     text-align:center;
+    font-size: large;
+    margin-bottom: 1%;
 
 }
 
@@ -192,4 +193,60 @@
 
 .five:hover{
     background-color: #9CC7A9;
+}
+
+.almostDone
+{
+    font-family: "Open Sans";
+    margin-top:10%;
+    text-align:center;
+
+}
+.finalQ
+{
+    font-family: "Open Sans";
+    margin-top:3%;
+    text-align:center;
+    font-size: xx-large;
+
+}
+.genreWrapper
+{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    margin: 2%;
+    height:fit-content;
+}
+.genreOption
+{
+    font-family: "Open Sans";
+    background-color: khaki;
+    display: flex;
+    justify-content: center;
+    font-size: medium;
+    cursor: pointer;
+}
+.genreScroll
+{
+    width: 60%;
+    height: 40%;
+    margin-left:20%;
+    margin-top:2%;
+    overflow-y:auto;
+    margin-bottom: 5%;
+
+    border-style: solid;
+    border-width:1px;
+    border-color:#9CC7A9;
+    border-radius: 5px;
+
+    display:grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+
+    /* border-radius: 5px;
+    border-color:#9CC7A9;
+    border-width:2px;
+    border-style: solid; */
+
 }
