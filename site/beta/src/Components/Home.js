@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { images } from './getImages';
-import '../StyleSheets/styles.css'
+import '../StyleSheets/ComponentSheets/Home.css'
+import '../StyleSheets/general.css'
 
 export class HomePage extends React.Component {
     constructor(props) {
@@ -13,29 +14,6 @@ export class HomePage extends React.Component {
             username: "none",
             usernameInput: false
         }
-        this.goHome = this.goHome.bind(this);
-        this.updateUsername = this.updateUsername.bind(this);
-    }
-
-    goHome() {
-        console.log("Home Button Pressed")
-        this.setState((state) =>{
-            state.title = state.title == "Updated" ? "Sample Title" : "Updated"
-        })
-        console.log("re render!")
-        this.forceUpdate()
-    }
-
-    updateUsername(e){
-        let username = this.state.username;
-        if (username != null){
-            this.setState((state) => {
-                state.usernameInput = true;
-            });
-        } else {
-            console.log("Sus!");
-        }
-        this.forceUpdate();
     }
 
     render () {

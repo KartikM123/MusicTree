@@ -9,7 +9,8 @@ import { useHistory } from 'react-router-dom';
 import { images } from './getImages';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 
-import '../StyleSheets/styles.css'
+import '../StyleSheets/general.css'
+import '../StyleSheets/ComponentSheets/Survey.css'
 
 
 class Question extends React.Component

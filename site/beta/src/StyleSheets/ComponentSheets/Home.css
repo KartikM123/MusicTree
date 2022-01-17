@@ -1,4 +1,5 @@
-img.logoLarge {
+
+.logoLarge {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -6,13 +7,13 @@ img.logoLarge {
 
 }
 
-h1.title {
+.title {
     font-family: "Open Sans";
     text-align: center;
     font-size: 55px;
 }
 
-p.subtitle {
+.subtitle {
   font-family: "Open Sans";
   text-align: center;
   font-size: 30px;
@@ -21,7 +22,7 @@ p.subtitle {
   font-weight: lighter;
 }
 
-div.center {
+.center {
     display:block;
     margin-left: auto;
     margin-right: auto;
@@ -30,27 +31,6 @@ div.center {
     border-color: purple;
     border-width: 10px;
 }
-a {
-    background-color: white;
-    color: black;
-    padding: 1em 1.5em;
-    text-decoration: none;
-    text-transform: uppercase;
-    text-align: center;
-    width: fit-content;
-
-    border-color: #9CC7A9;
-    border-width: 1px;
-    border-radius: 5px;
-    border-style:solid
-}
-  
-  a:hover {
-    background-color: #9CC7A9;
-    color: white;
-    border-color: white;
-    
-  }
 
  
   /* a:active {

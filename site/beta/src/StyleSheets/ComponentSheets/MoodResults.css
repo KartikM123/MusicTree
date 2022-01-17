@@ -7,7 +7,7 @@
     font-family: 'Open Sans';
     width: 100vw;
     height: 100vh;
-    background-image: url('../images/PersonalityBackground.svg');
+    background-image: url('../../images/PersonalityBackground.svg');
     background-size: cover;
     margin-top: 0 auto;
     position: absolute;

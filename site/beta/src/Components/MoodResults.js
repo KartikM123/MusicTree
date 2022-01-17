@@ -5,7 +5,8 @@ import album_map from '../Question_Data/AlbumMapping.json'
 import avatar_map from '../Question_Data/AvatarMapping.json'
 import { Link } from 'react-router-dom';
 import ProgressBar from 'react-bootstrap/ProgressBar'
-import '../StyleSheets/styles.css'
+import '../StyleSheets/general.css'
+import '../StyleSheets/ComponentSheets/MoodResults.css'
 function importAll(r) {
     let images = {};
     r.keys().map((item, index) => { images[item.replace('../', '')] = r(item); });
