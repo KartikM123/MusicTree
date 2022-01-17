@@ -123,42 +123,49 @@ class Question extends React.Component
 
     }
 
+    renderOptions()
+    {
+        return (
+            <div className = "options">
+
+                <div className = "optionWrapper">
+                    <div id= {this.state.uniqueId + "one"} className = "one borderStyle" onClick={() => {this.clickItem(1)}}>
+                    </div>
+                </div>
+
+                <div className = "optionWrapper">
+                    <div id= {this.state.uniqueId + "two"}   className = "two borderStyle" onClick={() => {this.clickItem(2)}}>
+                    </div>
+                </div>
+
+                <div className = "optionWrapper"  >
+                    <div id= {this.state.uniqueId + "three"} className = "three borderStyle" onClick={() => {this.clickItem(3)}}>
+                    </div>
+                </div>
+
+                <div className = "optionWrapper">
+                    <div id= {this.state.uniqueId + "four"}  className = "four borderStyle" onClick={() => {this.clickItem(4)}}>
+                    </div>
+                </div>
+
+                <div className = "optionWrapper">
+                    <div id= {this.state.uniqueId + "five"} className = "five borderStyle" onClick={() => {this.clickItem(5)}}>
+                    </div>
+                </div>
+            
+            </div>
+        );
+    }
+
     render()
     {
         let range = [1,2,3,4,5]
         return (
-            <div className = "question">
-                {/* <h1>{this.props.questionType}</h1> */}
-                <div className="q"> {this.props.currentQuestion}</div>
-                <div className="rangeWrapper">
+            <div className = "questionWrapper">
+                <div className="questionText"> {this.props.currentQuestion}</div>
+                <div className="questionContent">
                     <div className= "disagree"> Disagree </div>
-                    <div className = "options">
-                        <div className = "optionWrapper">
-                            <div id= {this.state.uniqueId + "one"} className = "one borderStyle" onClick={() => {this.clickItem(1)}}>
-                            </div>
-                        </div>
-
-                        <div className = "optionWrapper">
-                            <div id= {this.state.uniqueId + "two"}   className = "two borderStyle" onClick={() => {this.clickItem(2)}}>
-                            </div>
-                        </div>
-
-                        <div className = "optionWrapper"  >
-                            <div id= {this.state.uniqueId + "three"} className = "three borderStyle" onClick={() => {this.clickItem(3)}}>
-                            </div>
-                        </div>
-
-                        <div className = "optionWrapper">
-                            <div id= {this.state.uniqueId + "four"}  className = "four borderStyle" onClick={() => {this.clickItem(4)}}>
-                            </div>
-                        </div>
-
-                        <div className = "optionWrapper">
-                            <div id= {this.state.uniqueId + "five"} className = "five borderStyle" onClick={() => {this.clickItem(5)}}>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    {this.renderOptions()}
                     <div className = "agree"> Agree </div>
                 </div>
                 {/* <p id="error"></p>        
@@ -306,13 +313,12 @@ class Survey extends React.Component {
         
         this.setState((state) =>
         {
-            state.Questions = questions;//{"TempType": ["First Question", "Second Question"], "SecondType": ["NewType1", "NewType2"]}
+            state.Questions = questions;
             state.currentQuestion = questions[fileTypes[0]];
             state.questionType = fileTypes[0];
             state.allTypes = fileTypes;
             state.Ratings = ratings
         });
-        //this.forceUpdate();
     }
 
     
@@ -326,8 +332,6 @@ class Survey extends React.Component {
             state.initCondition = true;
         });
 
-       // document.getElementById("nextButton").innerHTML = "See my Results!"
-        // document.getElementById("error").innerHTML = "<Link to= \"/mood\">See my Results! </Link>"
         this.forceUpdate();
     }
     printRatings(){
@@ -361,8 +365,7 @@ class Survey extends React.Component {
             history.push('/');
             return;
         }
-        //ReactDOM.render(<div>"SOOD"</div>, document.getElementById('albumInfo'))
-        //this.finishedQuestions();
+        
         if (!this.checkStateDone()){
             this.setState((state) => {
                 state.error= true
@@ -373,7 +376,6 @@ class Survey extends React.Component {
             let newQCount = this.state.questionCount;
             let newType = this.state.questionType;
             let newTypeCount = this.state.typeCount;
-            let nextQuestion = "";
 
             let newRatings = this.state.Ratings;
             let totalClick = (5-this.results[0]) + this.results[1] + (5-this.results[2]) + this.results[3];
@@ -390,14 +392,7 @@ class Survey extends React.Component {
                 this.finishedQuestions();
                 return;
             }
-
-            console.log('queiing!')
-            console.log(newType)
-            console.log(newTypeCount)
-            console.log(this.state.Questions)
-
         
-
             this.setState((state) => {
                 state.Questions = state.Questions;
                 state.Ratings = newRatings;
@@ -564,7 +559,6 @@ class Survey extends React.Component {
 
                 {/* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" /> */}
                   {/* <ProgressBar variant="info" now={this.state.value+20} label={`${this.state.value+20}%`} /> */}
-
                 <div className="questionStore">
                     <Question id = "first" questionType={this.state.questionType} change={this.onChange}  weight = {this.state.currentQuestion[0][1]} currentQuestion={this.state.currentQuestion[0][0]} uniqueId="uno"/>
                     <Question id = "second" questionType={this.state.questionType} change={this.onChange}  weight = {this.state.currentQuestion[1][1]} currentQuestion={this.state.currentQuestion[1][0]} uniqueId="dos"/>

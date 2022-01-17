@@ -1,12 +1,49 @@
+/* Organization of Each Question */
+
+.questionWrapper
+{
+    height: 20%;
+    width: 80%;
+    margin-left:10%;
+    padding:2.5%;
+}
+
+.questionText
+{
+    font-family: "Open Sans";
+    text-align:center;
+    font-size: 1.4em;
+    margin-bottom: 1%;
+
+}
+
+.questionContent
+{
+    display: flex;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+.disagree
+{
+    flex:1;
+
+    font-size: 1.3em;
+    
+    text-align: center;
+
+    font-family: "Open Sans";
+    color: #996767;
+    font-weight: bolder;
+}
+
 .agree
 {
-    float: right;
-    width: 20%;
+    flex: 1;
+    font-size: 1.3em;
 
-    height:100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
 
 
     font-family: "Open Sans";
@@ -16,40 +53,27 @@
 
 }
 
+.options
+{
+    flex: 3;
+
+    float: left;
+    height: 75%;
+    margin-top: 2.5%;
+    width:60%;
+}
+
+
+
+
+
+
 .centerDiv
 {
     width:100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.disagree
-{
-    float: left;
-    width: 20%;
-
-    height:100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-family: "Open Sans";
-    color: #996767;
-    font-weight: bolder;
-}
-.rangeWrapper
-{
-    width: 90%;
-    margin-left: 5%;
-    height:75%;
-    
-}
-.options
-{
-    float: left;
-    height: 75%;
-    margin-top: 2.5%;
-    width:60%;
 }
 .questionStore
 {
@@ -63,27 +87,6 @@
     border-color:#9CC7A9;
     border-width:2px;
     border-style: solid; */
-
-}
-
-.question
-{
-    height: 10vw;
-    width: 60vw;
-    margin-left:15%;
-    padding:2.5%;
-
-    border-radius: 5px;
-    border-color:#9CC7A9;
-    border-width:2px;
-
-}
-.q
-{
-    font-family: "Open Sans";
-    text-align:center;
-    font-size: large;
-    margin-bottom: 1%;
 
 }
 
