@@ -81,9 +81,10 @@ async function getRecs (ac, req, res) {
     console.log("Getting recs!")
     console.log("Artits" + req.query.seed_artists);
     console.log(req.query.seed_tracks);
+    var cleanedSeeds = req.query.seed_tracks.replace(" ","")
     console.log(ac)
     var recOptions = {
-        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.seed_artists}&genres=${req.query.seed_genres}&seed_tracks=${req.query.seed_tracks}`,
+        url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.seed_artists}&genres=${req.query.seed_genres}&seed_tracks=${cleanedSeeds}`,
         headers: {
             'Authorization': 'Bearer ' + ac
         }
@@ -107,7 +108,9 @@ async function getRecs (ac, req, res) {
             parseBestResult(req, res, JSON.parse(body));
         } else {
             console.log("3")
-            console.log("shit!")
+            console.log("shit!");
+            console.log(error);
+            console.log(response.statusMessage)
             res.send(response.statusCode)
         }
     });

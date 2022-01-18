@@ -60,11 +60,7 @@ class Question extends React.Component
         switch (entry)
         {
             case 1:
-                target = "#996767";
-                break;
             case 2:
-                target = "#996767";
-                break;
             case 3:
                 target = "#996767";
                 break;
@@ -72,14 +68,10 @@ class Question extends React.Component
                 target = "#9C9FA9";
                 break;
             case 5:
-                target = "#9CC7A9";
-                break;
             case 6:
-                target = "#9CC7A9";
-                break;
             case 7:
                 target = "#9CC7A9";
-            break;
+                break;
             default:
                 target = "black";
                 console.log("Unknwown previous entry");
@@ -94,14 +86,10 @@ class Question extends React.Component
         this.state = {
             questionType : this.props.questionType,
             currentQuestion : q,
-            weight : this.props.weight,
             error : "",
             uniqueId: this.props.uniqueId
         }
         this.click = -1; 
-        console.log("Current quetsion");
-        console.log(this.props.currentQuestion);
-        console.log(this.props)
 
         this.clickItem = this.clickItem.bind(this)
         this.getTarget = this.getTarget.bind(this)
@@ -109,7 +97,7 @@ class Question extends React.Component
     }       
     componentWillReceiveProps()
     {
-        console.log("here!");
+        
         var clicked = this.click;
         if (clicked != -1)
         {
@@ -121,15 +109,20 @@ class Question extends React.Component
     
     clickItem(entry) {
         var clicked = this.click;
+
+        //If already clicked, then white out current 
         if (clicked != -1)
         {
             var target = this.getTarget(clicked);
             document.getElementById(target).style.backgroundColor = "white";
         }
+
+        //register new entry, set it to read values
         clicked = entry;
         this.click = clicked;
-        console.log(this.props);
+        
         this.props.change(this.state.uniqueId, entry)
+
         if (entry != -1)
         {
             var target = this.getTarget(entry);
@@ -189,35 +182,6 @@ class Question extends React.Component
         )
     }
 }
-
-class ListItem extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            imgSrc: ''
-        }
-
-        this.updateColor = this.updateColor.bind(this);
-    }
-
-    updateColor(){
-        return
-        this.setState((state) => {
-            state.color = state.color == "blue" ? "red" : "blue";
-        });
-        console.log(this.state.color);
-        this.forceUpdate();
-    }
-
-    render (){
-        return (
-            <li>
-                <div onClick={this.updateColor} className={this.props.val}  >{this.props.val}</div>
-            </li>
-        )
-    }
-}
-
 
 class Survey extends React.Component {
     
@@ -372,7 +336,7 @@ class Survey extends React.Component {
         console.log(this.results);
 
         console.log("next questions")
-        let test = true;
+        let test = false;
         if (this.state.initCondition){
             console.log("Redirect!");
             const history = useHistory();
@@ -393,7 +357,7 @@ class Survey extends React.Component {
 
             let newRatings = this.state.Ratings;
             let totalClick = (5-this.results[0]) + this.results[1] + (5-this.results[2]) + this.results[3];
-            newRatings[newType] = ((newRatings[newType] * newQCount) + totalClick)/(4);
+            newRatings[newType] = ((newRatings[newType] * newQCount) + totalClick)/(newQCount + 1);
 
 
             newTypeCount = newTypeCount + 1;
@@ -574,10 +538,10 @@ class Survey extends React.Component {
                 {/* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" /> */}
                   {/* <ProgressBar variant="info" now={this.state.value+20} label={`${this.state.value+20}%`} /> */}
                 <div className="questionStore">
-                    <Question id = "first" questionType={this.state.questionType} change={this.onChange}  weight = {this.state.currentQuestion[0][1]} currentQuestion={this.state.currentQuestion[0][0]} uniqueId="uno"/>
-                    <Question id = "second" questionType={this.state.questionType} change={this.onChange}  weight = {this.state.currentQuestion[1][1]} currentQuestion={this.state.currentQuestion[1][0]} uniqueId="dos"/>
-                    <Question id = "third" questionType={this.state.questionType} change={this.onChange} weight = {this.state.currentQuestion[2][1]} currentQuestion={this.state.currentQuestion[2][0]} uniqueId="tres"/>
-                    <Question id = "fourth" questionType={this.state.questionType} change={this.onChange}  weight = {this.state.currentQuestion[3][1]} currentQuestion={this.state.currentQuestion[3][0]} uniqueId="cuatro"/>
+                    <Question id = "first" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestion[0][0]} uniqueId="uno"/>
+                    <Question id = "second" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestion[1][0]} uniqueId="dos"/>
+                    <Question id = "third" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestion[2][0]} uniqueId="tres"/>
+                    <Question id = "fourth" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestion[3][0]} uniqueId="cuatro"/>
                 </div>
                 <div className="centerDiv">
                 <a onClick={() => this.clickN()} >Next Set</a>
@@ -586,21 +550,4 @@ class Survey extends React.Component {
         )
     }
 }
-
-class FinishedState extends React.Component{
-    constructor(props){
-        super(props)
-        this.state = this.props.state;
-    }
-
-    render() {
-        return (
-            <div className="Mood_Result">
-                <Link to = {{pathname: '/moods',
-                    state: this.state
-                    }} >See Stats!!</Link>     
-            </div>
-        );
-    }
-};
 export default Survey;

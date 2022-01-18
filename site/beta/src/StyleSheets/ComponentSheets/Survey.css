@@ -27,9 +27,9 @@
 
 .disagree
 {
-    flex:1;
+    display:none;
 
-    font-size: 1.3em;
+    font-size: 1em;
     
     text-align: center;
 
@@ -40,8 +40,8 @@
 
 .agree
 {
-    flex: 1;
-    font-size: 1.3em;
+    display:none;
+    font-size: 1em;
 
     text-align: center;
 
@@ -55,11 +55,12 @@
 
 .options
 {
-    flex: 3;
 
     display: flex;
-    justify-content: space-between;
+    flex: 0 0 100%;
+
     align-items: center;
+    justify-content: space-between;
 
     height: 75%;
     margin-top: 2.5%;
@@ -72,74 +73,160 @@
     align-items: center;
 }
 
+@media (min-width: 830px) and (min-height: 200px)
+{
+    .options
+    {
+        flex: 3;
+    }
+    .agree
+    {
+        flex:1;
+        font-size: 1.3em;
+        display:block;
+    }
+    .disagree
+    {
+        flex:1;
+        font-size: 1.3em;
+        display:block;
+    }
+    .questionStore .questionWrapper .questionContent .options .disagreeStrong
+    {
+        border-color: #996767;
+        
+        flex: 0 0 70px;
+        height: 70px;
+        max-width: 70px;
+
+    }
+
+    .questionStore .questionWrapper .questionContent .disagreeMed
+    {
+        border-color: #996767;
+
+        flex: 0 0 55px;
+        height: 55px;
+        max-width: 55px;
+
+    }
+
+    .questionStore .questionWrapper .questionContent .disagreeLight
+    {    
+        border-color: #996767;
+
+        flex: 0 0 45px;
+        height: 45px;
+        max-width: 45px;
+    }
+
+    .questionStore .questionWrapper .questionContent .neutral
+    {
+        border-color: #9C9FA9;
+
+        flex: 0 0 35px;
+        height: 35px;
+        max-width: 35px;
+
+    }
+
+    .questionStore .questionWrapper .questionContent .agreeLight
+    {
+        border-color: #9CC7A9;
+
+        flex: 0 0 45px;
+        height: 45px;
+        max-width: 45px;
+    }
+
+    .questionStore .questionWrapper .questionContent .agreeMed
+    {
+        border-color: #9CC7A9;
+
+
+        flex: 0 0 55px;
+        height: 55px;
+        max-width: 55px;
+    }
+
+
+    .questionStore .questionWrapper .questionContent .agreeStrong
+    {
+        border-color: #9CC7A9;
+        
+        flex: 0 0 70px;
+        height: 70px;
+        max-width: 70px;
+    }
+}
+
 .disagreeStrong
-{
-    border-color: #996767;
-    
-    flex: 0 0 70px;
-    height: 70px;
-    max-width: 70px;
+    {
+        border-color: #996767;
+        
+        flex: 0 0 45px;
+        height: 45px;
+        max-width: 45px;
 
-}
+    }
 
-.disagreeMed
-{
-    border-color: #996767;
+    .disagreeMed
+    {
+        border-color: #996767;
 
-    flex: 0 0 55px;
-    height: 55px;
-    max-width: 55px;
+        flex: 0 0 35px;
+        height: 35px;
+        max-width: 35px;
 
-}
+    }
 
-.disagreeLight
-{    
-    border-color: #996767;
+    .disagreeLight
+    {    
+        border-color: #996767;
 
-    flex: 0 0 45px;
-    height: 45px;
-    max-width: 45px;
-}
+        flex: 0 0 28px;
+        height: 28px;
+        max-width: 28px;
+    }
 
-.neutral
-{
-    border-color: #9C9FA9;
+    .neutral
+    {
+        border-color: #9C9FA9;
 
-    flex: 0 0 35px;
-    height: 35px;
-    max-width: 35px;
+        flex: 0 0 25px;
+        height: 25px;
+        max-width: 25px;
 
-}
+    }
 
-.agreeLight
-{
-    border-color: #9CC7A9;
+    .agreeLight
+    {
+        border-color: #9CC7A9;
 
-    flex: 0 0 45px;
-    height: 45px;
-    max-width: 45px;
-}
+        flex: 0 0 28px;
+        height: 28px;
+        max-width: 28px;
+    }
 
-.agreeMed
-{
-    border-color: #9CC7A9;
-
-
-    flex: 0 0 55px;
-    height: 55px;
-    max-width: 55px;
-}
+    .agreeMed
+    {
+        border-color: #9CC7A9;
 
 
-.agreeStrong
-{
-    border-color: #9CC7A9;
-    
-    flex: 0 0 70px;
-    height: 70px;
-    max-width: 70px;
-}
+        flex: 0 0 35px;
+        height: 35px;
+        max-width: 35px;
+    }
 
+
+    .agreeStrong
+    {
+        border-color: #9CC7A9;
+        
+        flex: 0 0 45px;
+        height: 45px;
+        max-width: 45px;
+    }
 
 
 
@@ -196,11 +283,7 @@
 }
 .questionStore
 {
-    width: 90vw;
-    height: 70vh;
     margin-top:2%;
-    overflow:auto;
-    margin-left:5%;
 
 
 }

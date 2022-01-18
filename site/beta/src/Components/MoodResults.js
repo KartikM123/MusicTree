@@ -44,13 +44,13 @@ class Bar extends React.Component
         } else 
         {
             negColor = this.props.color;
-            console.log("HERE!")
+            console.log("VALUE!" + this.state.value)
         }
         return (
         <div className="bar" >
             <p className = "barCategory">{this.state.category}</p>
             <p className = "description">{this.state.description} </p>
-            <ProgressBar variant={this.props.variant} now={this.state.value*20} label={`${this.state.value*20}%`} />
+            <ProgressBar variant={this.props.variant} now={this.state.value*10} label={`${this.state.value*10}%`} />
             
             <div className = "positiveBar"   style = {{color: posColor}}> {question_map[this.state.category]["Positive"]} </div>
 
