@@ -12,7 +12,13 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import '../StyleSheets/general.css'
 import '../StyleSheets/ComponentSheets/Survey.css'
 
-
+const disagreeStrong = "disagreeStrong"
+const disagreeMed = "disagreeMed";
+const disagreeLight = "disagreeLight";
+const neutral = "neutral";
+const agreeStrong = "agreeStrong"
+const agreeMed = "agreeMed";
+const agreeLight = "agreeLight";
 class Question extends React.Component
 {
     getTarget (clicked)
@@ -21,19 +27,25 @@ class Question extends React.Component
         switch (clicked)
         {
             case 1:
-                target = "one";
+                target = disagreeStrong;
                 break;
             case 2:
-                target = "two";
+                target = disagreeMed;
                 break;
             case 3:
-                target = "three";
+                target = disagreeLight;
                 break;
             case 4:
-                target = "four";
+                target = neutral;
                 break;
             case 5:
-                target = "five";
+                target = agreeLight
+                break;
+            case 6:
+                target = agreeMed;
+                break;
+            case 7:
+                target = agreeStrong;
                 break;
             default:
                 target = "unkwn";
@@ -54,14 +66,20 @@ class Question extends React.Component
                 target = "#996767";
                 break;
             case 3:
-                target = "#9C9FA9";
+                target = "#996767";
                 break;
             case 4:
-                target = "#9CC7A9";
+                target = "#9C9FA9";
                 break;
             case 5:
                 target = "#9CC7A9";
                 break;
+            case 6:
+                target = "#9CC7A9";
+                break;
+            case 7:
+                target = "#9CC7A9";
+            break;
             default:
                 target = "black";
                 console.log("Unknwown previous entry");
@@ -128,30 +146,26 @@ class Question extends React.Component
         return (
             <div className = "options">
 
-                <div className = "optionWrapper">
-                    <div id= {this.state.uniqueId + "one"} className = "one borderStyle" onClick={() => {this.clickItem(1)}}>
+                    <div id= {this.state.uniqueId + "disagreeStrong"} className = "disagreeStrong borderStyle optionDefault" onClick={() => {this.clickItem(1)}}>
                     </div>
-                </div>
 
-                <div className = "optionWrapper">
-                    <div id= {this.state.uniqueId + "two"}   className = "two borderStyle" onClick={() => {this.clickItem(2)}}>
+                    <div id= {this.state.uniqueId + "disagreeMed"}   className = "disagreeMed borderStyle optionDefault" onClick={() => {this.clickItem(2)}}>
                     </div>
-                </div>
 
-                <div className = "optionWrapper"  >
-                    <div id= {this.state.uniqueId + "three"} className = "three borderStyle" onClick={() => {this.clickItem(3)}}>
+                    <div id= {this.state.uniqueId + "disagreeLight"}   className = "disagreeLight borderStyle optionDefault" onClick={() => {this.clickItem(3)}}>
                     </div>
-                </div>
 
-                <div className = "optionWrapper">
-                    <div id= {this.state.uniqueId + "four"}  className = "four borderStyle" onClick={() => {this.clickItem(4)}}>
+                    <div id= {this.state.uniqueId + "neutral"} className = "neutral borderStyle optionDefault" onClick={() => {this.clickItem(4)}}>
                     </div>
-                </div>
 
-                <div className = "optionWrapper">
-                    <div id= {this.state.uniqueId + "five"} className = "five borderStyle" onClick={() => {this.clickItem(5)}}>
+                    <div id= {this.state.uniqueId + "agreeLight"}  className = "agreeLight borderStyle optionDefault" onClick={() => {this.clickItem(5)}}>
                     </div>
-                </div>
+
+                    <div id= {this.state.uniqueId + "agreeMed"}  className = "agreeMed borderStyle optionDefault" onClick={() => {this.clickItem(6)}}>
+                    </div>
+
+                    <div id= {this.state.uniqueId + "agreeStrong"} className = "agreeStrong borderStyle optionDefault" onClick={() => {this.clickItem(7)}}>
+                    </div>
             
             </div>
         );
