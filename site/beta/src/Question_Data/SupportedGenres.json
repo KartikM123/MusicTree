@@ -1,4 +1,26 @@
 {
+    "trimmedGenres": [
+      "Acoustic", 
+      "Afrobeat", 
+      "Alternative", 
+      "Blues", 
+      "Country", 
+      "Classical", 
+      "Dance", 
+      "Disco", 
+      "EDM", 
+      "Folk", 
+      "Funk", 
+      "Hip-Hop", 
+      "Heavy-Metal", 
+      "Indie", 
+      "K-Pop", 
+      "Jazz", 
+      "Pop", 
+      "R-N-B", 
+      "Soul", 
+      "World-Music"
+    ],
     "genres": [
       "acoustic",
       "afrobeat",
