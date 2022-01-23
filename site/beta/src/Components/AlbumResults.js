@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
 
+import '../StyleSheets/ComponentSheets/AlbumResults.css';
+import '../StyleSheets/general.css';
 class Album_Result extends React.Component {
     constructor(props) {
         super(props)
@@ -23,14 +25,12 @@ class Album_Result extends React.Component {
         this.getRecommendations = this.getRecommendations.bind(this)
         this.getAlbumImg = this.getAlbumImg.bind(this)
         this.state = this.props.location.state;
-        console.log(this.state)
 
     }
 
     async rerenderWorkflow()
     {
         var ratingMoods = this.getRatingMoods();
-        console.log("getting seeds!")
         var seed = this.getSeeds(ratingMoods);
 
         this.renderWithSeeds(ratingMoods, seed, undefined);
@@ -41,7 +41,6 @@ class Album_Result extends React.Component {
     {
 
         var genres = this.state.genre;
-        console.log("getting seeds!")
         var seed = this.getSeeds(ratingMoods);
         if (albumRec == undefined)
         {
@@ -52,7 +51,6 @@ class Album_Result extends React.Component {
         console.log("Album is " + recommendation);
 
         var imgUrl = await this.getAlbumImg(albumRec);
-        console.log(imgUrl);
 
         ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
         ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
@@ -73,8 +71,6 @@ class Album_Result extends React.Component {
         console.log("Album is " + recommendation);
 
         var imgUrl = await this.getAlbumImg(albumRec);
-        console.log(imgUrl);
-
         ReactDOM.render(<img onClick={() => {this.reseedOnClick(parentRec, albumRec)} } src={imgUrl} />, document.getElementById("albumArt" + num));
         ReactDOM.render(<div >{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
     }
@@ -123,7 +119,6 @@ class Album_Result extends React.Component {
             for (var m in ratingMoods)
             {
                 var moods = ratingMoods[m];
-                console.log(traits + "vs" + moods);
                 if (!traits.includes(moods))
                 {
                     isCorrect = false;
@@ -175,20 +170,26 @@ class Album_Result extends React.Component {
     render() {
         return (
             <div>
-                <div id="albumInfo">
-                </div>     
-                <div id= "albumName"> </div>
-                <div id="albumArt"></div>   
+                <div className="albumParent">
+                    <div id= "albumName"> </div>
+                    <div id="albumArt" className="albumArt"></div>   
+                </div>
+                <div className="albumChildren">
+                    
+                    <div id="albumChild1" className="albumChild">
+                        <div id= "albumName1" className="child1"></div>
+                        <div id="albumArt1" className="albumArt"></div>   
+                    </div>
+                    <div id="albumChild2" className="albumChild">
+                        <div id= "albumName2" className="child2"></div>
+                        <div id="albumArt2" className="albumArt"></div>   
+                    </div>
 
-                <div id= "albumName1"> </div>
-                <div id="albumArt1"></div>   
-
-                <div id= "albumName2"> </div>
-                <div id="albumArt2"></div>   
-
-
-                <div id= "albumName3"> </div>
-                <div id="albumArt3"></div>   
+                    <div id="albumChild3" className="albumChild">
+                        <div id= "albumName3" className="child3"></div>
+                        <div id="albumArt3" className="albumArt"></div>   
+                    </div>
+                </div>
             </div>
         )
     }
