@@ -23,7 +23,7 @@ class Album_Result extends React.Component {
         this.getRecommendations = this.getRecommendations.bind(this)
         this.getAlbumImg = this.getAlbumImg.bind(this)
         this.state = this.props.location.state;
-
+        console.log(this.state)
 
     }
 
@@ -40,12 +40,12 @@ class Album_Result extends React.Component {
     async renderWithSeeds(ratingMoods, seed, albumRec)
     {
 
-        var genres = ["rap", "rnb", "country"];
+        var genres = this.state.genre;
         console.log("getting seeds!")
         var seed = this.getSeeds(ratingMoods);
         if (albumRec == undefined)
         {
-            albumRec = await this.getRecommendations(seed,ratingMoods, ["rap", "rnb", "country"]);
+            albumRec = await this.getRecommendations(seed,ratingMoods, genres);
             console.log(albumRec["name"]);
         }
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];

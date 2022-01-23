@@ -14,66 +14,46 @@ export class Genre_Page extends React.Component
     {
         super(props)
         this.state = this.props.location.state;
+        this.state.genre = [];
+
+        this.clickGenre = this.clickGenre.bind(this);
+        this.isActiveGenre = this.isActiveGenre.bind(this);
     }
     clickGenre(genre)
     {
-        console.log("clck!")
         if (this.isActiveGenre(genre) != "white")
         {
             //deactivation workflow
             var target = 0;
-            switch (this.isActiveGenre(genre)){
-                case "blue":
-                    target = 0;
-                    break;
-                case "green":
-                    target = 1;
-                    break;
-                case "cyan":
-                    target = 2;
-                    break;
-                default:
-                    target = -1;
-                    break;
+
+            var newGenreList = [];
+            for(let i = 0; i < this.state.genre.length; i++)
+            {
+                if (this.state.genre[i] != genre)
+                {
+                    newGenreList.push(this.state.genre[i]);
+                }
             }
+
             this.setState((state) => {
-                state.genre[target] = "";
+                state.genre = newGenreList;
                 state.error = false;
             });
-            
-            if (this.state.currGenre > target)
-            {
-                this.setState((state) => {
-                    state.currGenre = target;
-                });            
-            }
-        } else if (this.state.currGenre > 2)
+        } else if (this.state.genre.length > 2)
         {
+            console.log("no more permitted");
+            //should not be clicking a new genre at this point
             this.setState((state) => {
                 state.error = true;
             });
         } else
         {
-            var nextGenre = 3;
-            if (this.state.genre[0] == "" && this.state.currGenre != 0)
-            {
-                nextGenre = 0;
-            } else if (this.state.genre[1] == "" && this.state.currGenre != 1)
-            {
-                nextGenre = 1;
-            } else if (this.state.genre[2] == "" && this.state.currGenre != 2)
-            {
-                nextGenre = 2;
-            } else {
-                nextGenre = 3;
-            }
+            var newGenreList = this.state.genre;
+            newGenreList.push(genre);
             this.setState((state) => {
                 state.error = false;
-                state.genre[state.currGenre] = genre;
-                state.currGenre = nextGenre;
+                state.genre = newGenreList;
             });
-            console.log("here")
-            console.log(this.state.currGenre);
         }
         console.log(this.state.genre);
         this.forceUpdate();
@@ -81,17 +61,10 @@ export class Genre_Page extends React.Component
 
     isActiveGenre(genre)
     {
-        if (genre == this.state.genre[0])
-        {
-            return "blue";
-        } else if (genre == this.state.genre[1])
+        if (this.state.genre.includes(genre))
         {
             return "green";
-        } else if (genre == this.state.genre[2])
-        {
-            return "cyan";
         }
-
         return "white";
         
     }
@@ -102,9 +75,9 @@ export class Genre_Page extends React.Component
 
         var keyGenres = genresAll["trimmedGenres"];
 
-        var finalPart =  <a> See Your Persona </a>;
-        if (this.state.currGenre > 2){
-            finalPart =  <Link to = {{pathname: '/album', state: this.state}} > See Your Persona </Link>  
+        var finalPart =  <a> See Your Results </a>;
+        if (this.state.genre.length > 2){
+            finalPart =  <Link to = {{pathname: '/album', state: this.state}} > See Your Results </Link>  
         }
 
         var root = this;
@@ -127,7 +100,7 @@ export class Genre_Page extends React.Component
                 {
                     keyGenres.map(function(genre){
                         return (<div className="genreWrapper">
-                            <a onClick={() => root.clickGenre(genre)} className="genreOption" style={{backgroundColor : root.isActiveGenre(genre) !="white" ? "green": "white", color: root.isActiveGenre(genre)== "white" ? "black" : "white"}} key={genre}> {genre} </a>
+                            <a onClick={() => root.clickGenre(genre)} className="genreOption" style={{backgroundColor : root.isActiveGenre(genre), color: root.isActiveGenre(genre)== "white" ? "black" : "white"}} key={genre}> {genre} </a>
                             </div>)
                     })
                 }
