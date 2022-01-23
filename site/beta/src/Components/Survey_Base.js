@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { images } from './getImages';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { Question } from './Utils/SurveyUtils.js'
+import { useHistory, Redirect } from 'react-router-dom';
+
 
 import '../StyleSheets/general.css'
 import '../StyleSheets/ComponentSheets/Survey.css'
@@ -87,8 +89,6 @@ class Survey extends React.Component {
             state.error = false;
             state.initCondition = true;
         });
-
-        this.forceUpdate();
     }
     
     printRatings()
@@ -253,15 +253,16 @@ class Survey extends React.Component {
         return "white";
         
     }
+
     renderGenrePicker()
     {
-        // CONSIDER MAKIGN THIS ITS OWN COMPONENT
+        // CONSIDER MAKING THIS ITS OWN COMPONENT
 
         var keyGenres = genresAll["trimmedGenres"];
 
-        var finalPart =  <a>See Stats!!</a>;
+        var finalPart =  <a> See Your Persona </a>;
         if (this.state.currGenre > 2){
-            finalPart =  <Link to = {{pathname: '/moods', state: this.state}} >See Stats!!</Link>  
+            finalPart =  <Link to = {{pathname: '/surveyResult', state: this.state}} > See Your Persona </Link>  
         }
 
         var root = this;
@@ -299,10 +300,15 @@ class Survey extends React.Component {
 
     render(){
 
-        let albumSrc = document.createElement("div");
-        
         if (this.state.initCondition) {
-            return this.renderGenrePicker();
+
+        
+        console.log("Redirect!");
+
+        return <Redirect to={{
+            pathname: '/surveyResult',
+            state: this.state
+        }} />
         } 
         console.log("RENDERING!");
         console.log(this.state);

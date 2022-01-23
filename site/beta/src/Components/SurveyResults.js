@@ -44,7 +44,6 @@ class Bar extends React.Component
         } else 
         {
             negColor = this.props.color;
-            console.log("VALUE!" + this.state.value)
         }
         return (
         <div className="bar" >
@@ -180,7 +179,7 @@ class Avatar extends React.Component {
     }
 
 }
-class Mood_Result extends React.Component {
+export class Survey_Result extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -276,9 +275,9 @@ class Mood_Result extends React.Component {
                     </div> */}
 
                 <div id="LinkContainer">
-                    <Link to = {{pathname: '/album',
+                    <Link to = {{pathname: '/genres',
                         state: this.state
-                        }} > See Album !!</Link>  
+                        }} > Pick your genres </Link>  
                 </div>
                 </div> 
             </div>
@@ -286,4 +285,4 @@ class Mood_Result extends React.Component {
 
     }
 }
-export default Mood_Result;
+export default Survey_Result;

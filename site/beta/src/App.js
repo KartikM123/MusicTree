@@ -4,9 +4,10 @@ import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import HomePage from './Components/Home'
-import Mood_Result from './Components/MoodResults'
+import Survey_Result from './Components/SurveyResults'
 import Album_Result from './Components/AlbumResults'
 import Survey from './Components/Survey_Base'
+import Genre_Page from './Components/Genres'
 
 class App extends Component {
   render() {
@@ -15,8 +16,9 @@ class App extends Component {
         <div>
             <Switch>
              <Route path="/" component={HomePage} exact/>
-             <Route path="/moods" component={Mood_Result}/>
+             <Route path="/surveyResult" component={Survey_Result}/>
              <Route path="/album" component={Album_Result}/>
+             <Route path="/genres" component={Genre_Page}/>
              <Route path="/survey" component={Survey}/>
            </Switch>
         </div> 
