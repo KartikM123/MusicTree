@@ -178,16 +178,16 @@ class Album_Result extends React.Component {
                     
                     <div id="albumChild1" className="albumChild">
                         <div id= "albumName1" className="child1"></div>
-                        <div id="albumArt1" className="albumArt"></div>   
+                        <div id="albumArt1" className="albumArt albumArtChild"></div>   
                     </div>
                     <div id="albumChild2" className="albumChild">
                         <div id= "albumName2" className="child2"></div>
-                        <div id="albumArt2" className="albumArt"></div>   
+                        <div id="albumArt2" className="albumArt albumArtChild"></div>   
                     </div>
 
                     <div id="albumChild3" className="albumChild">
                         <div id= "albumName3" className="child3"></div>
-                        <div id="albumArt3" className="albumArt"></div>   
+                        <div id="albumArt3" className="albumArt albumArtChild"></div>   
                     </div>
                 </div>
             </div>

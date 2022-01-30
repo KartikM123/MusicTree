@@ -17,5 +17,9 @@
 .albumArt 
 {
     align-content: center;
-    width:30%;
+    margin: auto;
+}
+.albumArtChild
+{
+    width: 30%;
 }
