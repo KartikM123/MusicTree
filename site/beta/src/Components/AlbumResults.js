@@ -49,6 +49,9 @@ class Album_Result extends React.Component {
 
         // handle graph state
         this.handleGraphState = this.handleGraphState.bind(this)
+        this.renderWithSeeds = this.renderWithSeeds.bind(this)
+        this.renderChild = this.renderChild.bind(this)
+
         this.graphDataDict = {}
 
         this.cachedGraphData = this.state.graphData;
@@ -81,9 +84,9 @@ class Album_Result extends React.Component {
         if (isRoot)
         {
             albumRec = await this.getRecommendations(seed,ratingMoods, genres);
-        }
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
         console.log("ROOT Album is " + recommendation);
+        }
 
         var imgUrl = await this.getAlbumImg(albumRec);
 
