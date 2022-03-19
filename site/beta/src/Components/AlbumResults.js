@@ -81,44 +81,42 @@ class Album_Result extends React.Component {
         if (isRoot)
         {
             albumRec = await this.getRecommendations(seed,ratingMoods, genres);
-            console.log(albumRec["name"]);
         }
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
-        console.log("Album is " + recommendation);
+        console.log("ROOT Album is " + recommendation);
 
         var imgUrl = await this.getAlbumImg(albumRec);
 
-        // ReactDOM.render(<img src={imgUrl} />, document.getElementById("albumArt"));
-        // ReactDOM.render(<div>{recommendation}</div>, document.getElementById("albumName"));
         if (isRoot)
         {
+            console.log('hitting special root case')
             var stringAlbumRec = String(albumRec["name"]);
-            console.log(stringAlbumRec);
-            console.log("Ivy")     
             this.cachedGraphData.nodes.push({ id: stringAlbumRec });
             this.graphDataDict[stringAlbumRec]  = albumRec;  // add to graph data dict
+            this.setState((state, props) => {
+                return ({
+                    graphData: this.cachedGraphData,
+                    color: 6//"#6134eb"
+                })
+            });
         }
         let child1 = await this.renderChild(seed, 1, genres, albumRec);
         let child2 = await this.renderChild(seed, 2, genres, albumRec);
-        let child3 = this.renderChild(seed, 3, genres, albumRec);
+        let child3 = await this.renderChild(seed, 3, genres, albumRec);
 
-        //this.cachedGraphData = this.sanitize(this.cachedGraphData)
-        //this.cachedGraphData.links.push({ source: this.cachedGraphData.nodes[0], target: this.cachedGraphData.nodes[2] });
         this.setState((state, props) => {
             return ({
                 graphData: emptyGraph,
                 color: 2//"#6134eb"
             })
         });
-
-        if (isRoot)
-        {
-            //this.cachedGraphData.links.push({ source: 'a', target: stringAlbumRec });
-        } 
+        
         this.cachedGraphData.links.push({ source: stringAlbumRec, target: child1 });
         this.cachedGraphData.links.push({ source: stringAlbumRec, target: child2 });
         this.cachedGraphData.links.push({ source: stringAlbumRec, target: child3 });
-            
+        
+        console.log("After click: This is the new graph");
+        console.log(this.cachedGraphData)
         this.setState((state, props) => {
             return ({
                 graphData: this.cachedGraphData,
@@ -134,8 +132,6 @@ class Album_Result extends React.Component {
         let newData;
         for (let i = 0; i < groupData.nodes.length; i++)
         {
-            console.log(groupData.nodes[i]["vx"] )
-            console.log(isNaN(groupData.nodes[i]["vx"]))
             if (isNaN(groupData.nodes[i]["vx"]) || groupData.nodes[i]["vx"] == undefined)
             {
                 groupData.nodes[i]["vx"] = i;
@@ -145,7 +141,6 @@ class Album_Result extends React.Component {
                 groupData.nodes[i]["_indexColor"] = "#d80002";
             }
         }
-        console.log(groupData)
         return groupData;
     }
     async renderChild(seed, num, genres, parentRec)
@@ -154,9 +149,8 @@ class Album_Result extends React.Component {
 
         var ratingMoods = this.getRatingMoods();
         var albumRec = await this.getRecommendations(seed, ratingMoods, genres[num-1]);
-        console.log(albumRec["name"])
         var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
-        console.log("Album is " + recommendation);
+        console.log("Child Album is " + recommendation);
 
         var imgUrl = await this.getAlbumImg(albumRec);
 
@@ -219,14 +213,14 @@ class Album_Result extends React.Component {
             }
             if (isCorrect)
             {
-                console.log("Identified seed album as " + album);
+                //console.log("Identified seed album as " + album);
                 res.seed_artists = albumInfo["seed_artists"];
                 res.seed_tracks = albumInfo["seed_tracks"];
                 res.seed = album;
                 return res;
             }
         }
-        console.log("no seeds found!")
+        //console.log("no seeds found!")
         return res;
     }
 
@@ -249,7 +243,6 @@ class Album_Result extends React.Component {
     async getAlbumImg(albumRec){
         var trackID = albumRec["id"]
         var targetURL = "http://localhost:9000/getSongs/getTrackPhoto?track_id="+trackID;
-        console.log("Using recommendation engine");
         var res =  await fetch(targetURL);
         
         var resultText = await res.text();
@@ -257,16 +250,17 @@ class Album_Result extends React.Component {
     }
         
     async componentDidMount(){
-        console.log("Execute Post Render");
         await this.rerenderWorkflow();
+        //await this.rerenderWorkflow();
     }
     render() {
-        console.log("RENDERING!")
-        console.log(this.state.color)
+        var ratingMoods = this.getRatingMoods();
+        var seed = this.getSeeds(ratingMoods);
+
         return (
             <div>
                 <div>
-                <DynamicGraph graphData={this.state.graphData} colori={this.state.color}/>
+                <DynamicGraph graphData={this.state.graphData} colori={this.state.color} ratingMoods={ratingMoods} seed={seed} rerenderTrigger={this.renderWithSeeds}/>
                 </div>
                 <div className="albumParent">
                     <div id= "albumName"> </div>

@@ -66,6 +66,7 @@ class DynamicGraph extends React.Component
         }
 
         this.ref = React.createRef();
+        this.nodeClickHandler = this.nodeClickHandler.bind(this)
 
     }
 
@@ -76,25 +77,21 @@ class DynamicGraph extends React.Component
         return true;
     }
 
-    nodeHandler (node)
+    nodeClickHandler (node)
     {
-        console.log("Handling!");
-        console.log(node);
-        return ['c', 'd', 'e']        
+        console.log("Entered on click listeners!")
+        this.props.rerenderTrigger(this.props.ratingMoods, this.props.seed, node.id)
     }
    
     render()
     {
-        console.log("update graph!");
-        console.log(this.state.graphData)
-        console.log(this.state.color)
-        console.log(this.props.colori)
         return (
-            <ForceGraph2D  
-            ref={this.ref}
-            nodeRelSize={this.props.colori}
-            graphData={this.props.graphData}/>
-            )
+                <ForceGraph2D  
+                ref={this.ref}
+                nodeRelSize={this.props.colori}
+                graphData={this.props.graphData}
+                onNodeClick={this.nodeClickHandler}/>
+        )
     }
 }
 export default DynamicGraph;
