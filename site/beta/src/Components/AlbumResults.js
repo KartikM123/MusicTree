@@ -33,6 +33,7 @@ class Album_Result extends React.Component {
         this.state = {
             ratingMoods: this.getRatingMoods(),
             seed: undefined,
+            graphDataRef: {},
             ...this.props.location.state
         }
 
@@ -79,6 +80,7 @@ class Album_Result extends React.Component {
         await this.setState(() => {
             return ({
                 graphData: newGraphData,
+                graphDataRef: this.graphDataDict,
                 color: 6//"#6134eb"
             })
         });
@@ -173,6 +175,7 @@ class Album_Result extends React.Component {
                 <div>
                 <DynamicGraph 
                     graphData={this.state.graphData} 
+                    graphDataDict={this.state.graphDataDict}
                     rerenderTrigger={this.renderBranch} />
                 </div>
             </div>
