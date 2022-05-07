@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
 
@@ -7,17 +6,9 @@ import '../StyleSheets/ComponentSheets/AlbumResults.css';
 import '../StyleSheets/general.css';
 
 import DynamicGraph from './Utils/DynamicGraph';
-import ForceGraph2D from 'react-force-graph-2d';
 
-const ConstGraph = (updateDataHandler) => {
-    const [ data , dState] = useState({ nodes: [], links : []});
-    dState(updateDataHandler);
-
-    return <ForceGraph2D 
-        graphData={data}
-    />
-}
-
+import * as APIUtils from './Utils/ApiCalls';
+import * as AlbumTraitUtil from './Utils/AlbumTraitMatch'
 const sampleGraph = {
     nodes: [{ id: 'a' }, { id: 'b' }],
     links: [
@@ -31,138 +22,103 @@ const emptyGraph = {
     ]
 };
 
+const NUM_GENRES = 3; // we currently support 3 genres 
 
 class Album_Result extends React.Component {
     constructor(props) {
         super(props)
-        this.rerenderWorkflow = this.rerenderWorkflow.bind(this);
-        this.renderChild = this.renderChild.bind(this)
-        this.reseedOnClick = this.reseedOnClick.bind(this)
+        this.reseedOnClick = this.reseedOnClick.bind(this);
 
         //used for recommendation engine
-        this.getSeeds = this.getSeeds.bind(this)
-        this.getRecommendations = this.getRecommendations.bind(this)
-        this.getAlbumImg = this.getAlbumImg.bind(this)
-        this.state = this.props.location.state;
-        this.state.graphData = sampleGraph;
-        this.state.color = 3;
+        this.state = {
+            ratingMoods: this.getRatingMoods(),
+            ...this.props.location.state
+        }
+
+        // handle initial render (personality --> album)
+        this.getSeed = this.getSeed.bind(this)
 
         // handle graph state
-        this.handleGraphState = this.handleGraphState.bind(this)
-        this.renderWithSeeds = this.renderWithSeeds.bind(this)
+        this.renderWithSeeds = this.renderBranch.bind(this)
         this.renderChild = this.renderChild.bind(this)
 
+        // fancy magic to add data to/fro graph 
         this.graphDataDict = {}
-
-        this.cachedGraphData = this.state.graphData;
-
-
-    }
-
-    handleGraphState(node)
-    {
+        this.state.graphData = sampleGraph; // need to populate it with some garbage
+        this.setNewGraphState = this.setNewGraphState.bind(this);
+        this.addNewGraphNode = this.addNewGraphNode(this);
 
     }
 
-    /* Render the music options */
-    async rerenderWorkflow()
-    {
-        var ratingMoods = this.getRatingMoods();
-        var seed = this.getSeeds(ratingMoods);
+    addNewGraphNode(newGraphData, albumNode, parent, rerender) {
+        // add as a node
+        var albumName = String(albumNode["name"]);
+        newGraphData.nodes.push({ id: albumName });
 
-        this.renderWithSeeds(ratingMoods, seed, undefined);
-    }
+        // add to graph data dict for future reference
+        this.graphDataDict[albumName]  = albumNode;
 
-
-    async renderWithSeeds(ratingMoods, seed, albumRec)
-    {
-        var isRoot = (albumRec == undefined);
-        this.cachedGraphData = this.state.graphData;
-
-        var genres = this.state.genre;
-        var seed = this.getSeeds(ratingMoods);
-        if (isRoot)
-        {
-            albumRec = await this.getRecommendations(seed,ratingMoods, genres);
-        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
-        console.log("ROOT Album is " + recommendation);
+        // link if parent
+        if (parent != undefined) {
+            newGraphData.links.push({ source: parent, target: albumName });
         }
 
-        var imgUrl = await this.getAlbumImg(albumRec);
-
-        if (isRoot)
-        {
-            console.log('hitting special root case')
-            var stringAlbumRec = String(albumRec["name"]);
-            this.cachedGraphData.nodes.push({ id: stringAlbumRec });
-            this.graphDataDict[stringAlbumRec]  = albumRec;  // add to graph data dict
-            this.setState((state, props) => {
-                return ({
-                    graphData: this.cachedGraphData,
-                    color: 6//"#6134eb"
-                })
-            });
+        // rerender (true for initial)
+        if (rerender == true) {
+            this.setNewGraphState(newGraphData);
         }
-        let child1 = await this.renderChild(seed, 1, genres, albumRec);
-        let child2 = await this.renderChild(seed, 2, genres, albumRec);
-        let child3 = await this.renderChild(seed, 3, genres, albumRec);
 
-        this.setState((state, props) => {
+        // return to be used in future workflow
+        return newGraphData;
+    }
+    
+    setNewGraphState(newGraphData) {
+        // this requires a special handler bc the api needs a clear before an update
+        this.setState(() => {
             return ({
                 graphData: emptyGraph,
                 color: 2//"#6134eb"
             })
         });
-        
-        this.cachedGraphData.links.push({ source: stringAlbumRec, target: child1 });
-        this.cachedGraphData.links.push({ source: stringAlbumRec, target: child2 });
-        this.cachedGraphData.links.push({ source: stringAlbumRec, target: child3 });
-        
-        console.log("After click: This is the new graph");
-        console.log(this.cachedGraphData)
-        this.setState((state, props) => {
+
+        this.setState(() => {
             return ({
-                graphData: this.cachedGraphData,
+                graphData: newGraphData,
                 color: 6//"#6134eb"
             })
         });
+    }
+
+    //seed: the data which is used to inform the search
+    //root: the parent of all children
+    async renderBranch(seed, root)
+    {
+        // handle graph update
+        // we need to cache it to control updates to graphData
+        var newGraphData = this.state.graphData;
+
+        // create a root if this is the first render
+        if (root == undefined)
+        {
+            root = await APIUtils.getRecommendations(seed, this.state.genre);
+            console.log("ROOT Album is " + APIUtils.recommendationToString(root));
+
+            newGraphData = this.addNewGraphNode(newGraphData, root, undefined, true); // trigger rerender for first node :D
+        }
+
+        // 1 child per genre
+        for (var i = 0; i < NUM_GENRES; i++) {
+            let child = await APIUtils.getRecommendations(seed, genres[i]);
+            newGraphData = this.addNewGraphNode(newGraphData, child, root["name"], false);
+        }
+
+        console.log("After click: This is the new graph");
+        console.log(newGraphData)
+
+        this.setNewGraphState(newGraphData);
 
        // this.forceUpdate();
 
-    }
-    sanitize(groupData)
-    {
-        let newData;
-        for (let i = 0; i < groupData.nodes.length; i++)
-        {
-            if (isNaN(groupData.nodes[i]["vx"]) || groupData.nodes[i]["vx"] == undefined)
-            {
-                groupData.nodes[i]["vx"] = i;
-                groupData.nodes[i]["vy"] = i;
-                groupData.nodes[i]["x"] = i;
-                groupData.nodes[i]["y"] = i;
-                groupData.nodes[i]["_indexColor"] = "#d80002";
-            }
-        }
-        return groupData;
-    }
-    async renderChild(seed, num, genres, parentRec)
-    {
-
-
-        var ratingMoods = this.getRatingMoods();
-        var albumRec = await this.getRecommendations(seed, ratingMoods, genres[num-1]);
-        var recommendation = albumRec["name"] + " by " + albumRec["artists"][0]["name"];
-        console.log("Child Album is " + recommendation);
-
-        var imgUrl = await this.getAlbumImg(albumRec);
-
-        // ReactDOM.render(<img onClick={() => {this.reseedOnClick(parentRec, albumRec)} } src={imgUrl} />, document.getElementById("albumArt" + num));
-        // ReactDOM.render(<div >{recommendation} + {genres[num-1]}</div>, document.getElementById("albumName" + num));
-
-        this.cachedGraphData.nodes.push({id: albumRec["name"]});
-       // this.cachedGraphData.links.push({ source: parentRec["name"], target: albumRec["name"] });
-       return albumRec["name"];
     }
 
     reseedOnClick = (parentRec, albumRec) =>
@@ -171,99 +127,62 @@ class Album_Result extends React.Component {
             "seed": albumRec["name"],
             "seed_artists": "",
             "seed_tracks": ""
-        }        
-
-        var ratingMoods = this.getRatingMoods();
+        }
         
         seed.seed_artists = parentRec["artists"][0]["id"] + "," + albumRec["artists"][0]["id"];
         seed.seed_tracks = parentRec["id"] + "," + albumRec["id"];
 
-        this.renderWithSeeds(ratingMoods, seed, albumRec);
+        this.renderBranch(seed, albumRec);
     }
-    /* API Querying Utils */
+
+    /* Used on mount */
     getRatingMoods() {
         let ratingMoods = [];
-        for (var key in this.state.Ratings){
-            if (this.state.Ratings[key] > 3){
+        let Ratings = this.props.location.state.Ratings;
+
+        for (var key in Ratings){
+            if (Ratings[key] > 3){
                 ratingMoods.push(question_map[key]["Positive"]);
             } else {
                 ratingMoods.push(question_map[key]["Negative"]);
             }
         }
+
         return ratingMoods;
     }
     
-    getSeeds(ratingMoods)
+    getSeed()
     {
-        var albumName = "";
-        var res = {
-            "seed": "NA",
-            "seed_artists": "",
-            "seed_tracks": ""
-        }
         for (var album in album_map)
         {
-            var albumInfo = album_map[album];
-            var traits = albumInfo["traits"];
-            var isCorrect = true;
-            for (var m in ratingMoods)
+            var res = AlbumTraitUtil.albumTraitMatch(this.state.ratingMoods, album_map[album]);
+            if (res != undefined) //means match was found
             {
-                var moods = ratingMoods[m];
-                if (!traits.includes(moods))
-                {
-                    isCorrect = false;
-                }
-            }
-            if (isCorrect)
-            {
-                //console.log("Identified seed album as " + album);
-                res.seed_artists = albumInfo["seed_artists"];
-                res.seed_tracks = albumInfo["seed_tracks"];
-                res.seed = album;
                 return res;
             }
         }
-        //console.log("no seeds found!")
-        return res;
+
+        console.log("no seeds found!")
+        return undefined;
     }
 
-    async getRecommendations(seed, ratingMoods, genreSeeds){
-
-        if (seed.seed == "NA"){
-            return -1;
-        }
-        var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
-        console.log("Using recommendation engine");
-        var res =  await fetch(targetURL);
-        
-        var resultObject = await res.json();
-        
-        var recommendation = resultObject["name"] + " by " + resultObject["artists"][0]["name"];
-        console.log("recommending " + recommendation);
-        return resultObject;
-    }
-
-    async getAlbumImg(albumRec){
-        var trackID = albumRec["id"]
-        var targetURL = "http://localhost:9000/getSongs/getTrackPhoto?track_id="+trackID;
-        var res =  await fetch(targetURL);
-        
-        var resultText = await res.text();
-        return resultText;
-    }
-        
     async componentDidMount(){
-        await this.rerenderWorkflow();
-        //await this.rerenderWorkflow();
+        //this seed will be used to search tree
+        var seed = this.getSeed();
+
+        await this.renderBranch(seed, undefined);
     }
+
     render() {
-        var ratingMoods = this.getRatingMoods();
         var seed = this.getSeeds(ratingMoods);
 
         return (
             <div>
                 <div>
-                <DynamicGraph graphData={this.state.graphData} colori={this.state.color} ratingMoods={ratingMoods} seed={seed} rerenderTrigger={this.renderWithSeeds}/>
+                <DynamicGraph 
+                    graphData={this.state.graphData} 
+                    seed={seed} 
+                    rerenderTrigger={this.renderBranch} />
                 </div>
             </div>
         )

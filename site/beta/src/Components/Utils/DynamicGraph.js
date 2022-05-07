@@ -7,7 +7,6 @@ class DynamicGraph extends React.Component
         super(props)
         this.state = {
             graphData: this.props.graphData,
-            color: this.props.colori
         }
 
         this.ref = React.createRef();
@@ -24,7 +23,7 @@ class DynamicGraph extends React.Component
     nodeClickHandler (node)
     {
         console.log("Entered on click listeners!")
-        this.props.rerenderTrigger(this.props.ratingMoods, this.props.seed, node.id)
+        this.props.rerenderTrigger(this.props.seed, node.id)
     }
    
     render()
