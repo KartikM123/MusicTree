@@ -47,7 +47,6 @@ class Album_Result extends React.Component {
         this.state.graphData = sampleGraph; // need to populate it with some garbage
         this.setNewGraphState = this.setNewGraphState.bind(this);
         this.addNewGraphNode = this.addNewGraphNode.bind(this);
-        this.preventReRender = this.preventReRender.bind(this);
 
     }
 
@@ -79,25 +78,8 @@ class Album_Result extends React.Component {
         // this requires a special handler bc the api needs a clear before an update
         await this.setState(() => {
             return ({
-                graphData: emptyGraph,
-                color: 2//"#6134eb"
-            })
-        });
-
-        await this.setState(() => {
-            return ({
                 graphData: newGraphData,
                 color: 6//"#6134eb"
-            })
-        });
-    }
-
-    async preventReRender() {
-        console.log("stop rerenders")
-        await this.setState(() => {
-            return ({
-                graphData: emptyGraph,
-                color: 2//"#6134eb"
             })
         });
     }
@@ -128,8 +110,6 @@ class Album_Result extends React.Component {
             
             root = rootInfo["name"];
         }
-
-        await this.preventReRender();
 
         // 1 child per genre
         for (var i = 0; i < NUM_GENRES; i++) {
