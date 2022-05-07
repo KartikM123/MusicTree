@@ -1,0 +1,33 @@
+
+.logoLarge {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50%;
+
+}
+
+.title {
+    font-family: "Open Sans";
+    text-align: center;
+    font-size: 55px;
+}
+
+.subtitle {
+  font-family: "Open Sans";
+  text-align: center;
+  font-size: 30px;
+  margin-left: 10%;
+  margin-right: 10%;
+  font-weight: lighter;
+}
+
+.center {
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+
+    border-color: purple;
+    border-width: 10px;
+}

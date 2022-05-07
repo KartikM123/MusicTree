@@ -1,0 +1,25 @@
+.albumParent
+{
+    display: block;
+    text-align: center;
+    align-content: center;
+}
+.albumChildren
+{
+    display: flex;
+    justify-content: center;
+}
+.albumChild
+{
+    text-align: center;
+    flex: 1;
+}
+.albumArt 
+{
+    align-content: center;
+    margin: auto;
+}
+.albumArtChild
+{
+    width: 30%;
+}

@@ -5,7 +5,8 @@ import album_map from '../Question_Data/AlbumMapping.json'
 import avatar_map from '../Question_Data/AvatarMapping.json'
 import { Link } from 'react-router-dom';
 import ProgressBar from 'react-bootstrap/ProgressBar'
-import '../StyleSheets/styles.css'
+import '../StyleSheets/general.css'
+import '../StyleSheets/ComponentSheets/MoodResults.css'
 function importAll(r) {
     let images = {};
     r.keys().map((item, index) => { images[item.replace('../', '')] = r(item); });
@@ -43,13 +44,12 @@ class Bar extends React.Component
         } else 
         {
             negColor = this.props.color;
-            console.log("HERE!")
         }
         return (
         <div className="bar" >
             <p className = "barCategory">{this.state.category}</p>
             <p className = "description">{this.state.description} </p>
-            <ProgressBar variant={this.props.variant} now={this.state.value*20} label={`${this.state.value*20}%`} />
+            <ProgressBar variant={this.props.variant} now={this.state.value*10} label={`${this.state.value*10}%`} />
             
             <div className = "positiveBar"   style = {{color: posColor}}> {question_map[this.state.category]["Positive"]} </div>
 
@@ -179,7 +179,7 @@ class Avatar extends React.Component {
     }
 
 }
-class Mood_Result extends React.Component {
+export class Survey_Result extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -275,9 +275,9 @@ class Mood_Result extends React.Component {
                     </div> */}
 
                 <div id="LinkContainer">
-                    <Link to = {{pathname: '/album',
+                    <Link to = {{pathname: '/genres',
                         state: this.state
-                        }} > See Album !!</Link>  
+                        }} > Pick your genres </Link>  
                 </div>
                 </div> 
             </div>
@@ -285,4 +285,4 @@ class Mood_Result extends React.Component {
 
     }
 }
-export default Mood_Result;
+export default Survey_Result;
