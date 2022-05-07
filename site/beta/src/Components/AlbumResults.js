@@ -265,26 +265,6 @@ class Album_Result extends React.Component {
                 <div>
                 <DynamicGraph graphData={this.state.graphData} colori={this.state.color} ratingMoods={ratingMoods} seed={seed} rerenderTrigger={this.renderWithSeeds}/>
                 </div>
-                <div className="albumParent">
-                    <div id= "albumName"> </div>
-                    <div id="albumArt" className="albumArt"></div>   
-                </div>
-                <div className="albumChildren">
-                    
-                    <div id="albumChild1" className="albumChild">
-                        <div id= "albumName1" className="child1"></div>
-                        <div id="albumArt1" className="albumArt albumArtChild"></div>   
-                    </div>
-                    <div id="albumChild2" className="albumChild">
-                        <div id= "albumName2" className="child2"></div>
-                        <div id="albumArt2" className="albumArt albumArtChild"></div>   
-                    </div>
-
-                    <div id="albumChild3" className="albumChild">
-                        <div id= "albumName3" className="child3"></div>
-                        <div id="albumArt3" className="albumArt albumArtChild"></div>   
-                    </div>
-                </div>
             </div>
         )
     }
