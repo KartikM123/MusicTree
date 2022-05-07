@@ -1,10 +1,15 @@
-export function albumTraitMatch(moods, albumInfo) {
+import album_map from '../../Question_Data/AlbumMapping.json'
+
+export function albumTraitMatch(moods, album) {
+    var albumInfo = album_map[album]
     var traits = albumInfo["traits"];
     var isCorrect = true;
-    for (var m in ratingMoods)
+    var res = {};
+
+    for (var m in moods)
     {
-        var moods = ratingMoods[m];
-        if (!traits.includes(moods))
+        var mood = moods[m];
+        if (!traits.includes(mood))
         {
             isCorrect = false;
         }

@@ -1,6 +1,7 @@
 import React from 'react';
 import question_map from '../Question_Data/questions.json'
 import album_map from '../Question_Data/AlbumMapping.json'
+import structuredClone from '@ungap/structured-clone';
 
 import '../StyleSheets/ComponentSheets/AlbumResults.css';
 import '../StyleSheets/general.css';
@@ -27,11 +28,11 @@ const NUM_GENRES = 3; // we currently support 3 genres
 class Album_Result extends React.Component {
     constructor(props) {
         super(props)
-        this.reseedOnClick = this.reseedOnClick.bind(this);
-
+        this.getRatingMoods = this.getRatingMoods.bind(this)
         //used for recommendation engine
         this.state = {
             ratingMoods: this.getRatingMoods(),
+            seed: undefined,
             ...this.props.location.state
         }
 
@@ -39,18 +40,18 @@ class Album_Result extends React.Component {
         this.getSeed = this.getSeed.bind(this)
 
         // handle graph state
-        this.renderWithSeeds = this.renderBranch.bind(this)
-        this.renderChild = this.renderChild.bind(this)
+        this.renderBranch = this.renderBranch.bind(this)
 
         // fancy magic to add data to/fro graph 
         this.graphDataDict = {}
         this.state.graphData = sampleGraph; // need to populate it with some garbage
         this.setNewGraphState = this.setNewGraphState.bind(this);
-        this.addNewGraphNode = this.addNewGraphNode(this);
+        this.addNewGraphNode = this.addNewGraphNode.bind(this);
+        this.preventReRender = this.preventReRender.bind(this);
 
     }
 
-    addNewGraphNode(newGraphData, albumNode, parent, rerender) {
+    async addNewGraphNode(newGraphData, albumNode, parent, rerender) {
         // add as a node
         var albumName = String(albumNode["name"]);
         newGraphData.nodes.push({ id: albumName });
@@ -60,28 +61,30 @@ class Album_Result extends React.Component {
 
         // link if parent
         if (parent != undefined) {
+            console.log(`creating root ${parent} to ${albumName}`)
             newGraphData.links.push({ source: parent, target: albumName });
         }
 
         // rerender (true for initial)
         if (rerender == true) {
-            this.setNewGraphState(newGraphData);
+            console.log("rerender!")
+            await this.setNewGraphState(newGraphData);
         }
 
         // return to be used in future workflow
         return newGraphData;
     }
     
-    setNewGraphState(newGraphData) {
+    async setNewGraphState(newGraphData) {
         // this requires a special handler bc the api needs a clear before an update
-        this.setState(() => {
+        await this.setState(() => {
             return ({
                 graphData: emptyGraph,
                 color: 2//"#6134eb"
             })
         });
 
-        this.setState(() => {
+        await this.setState(() => {
             return ({
                 graphData: newGraphData,
                 color: 6//"#6134eb"
@@ -89,50 +92,57 @@ class Album_Result extends React.Component {
         });
     }
 
+    async preventReRender() {
+        console.log("stop rerenders")
+        await this.setState(() => {
+            return ({
+                graphData: emptyGraph,
+                color: 2//"#6134eb"
+            })
+        });
+    }
+
     //seed: the data which is used to inform the search
     //root: the parent of all children
-    async renderBranch(seed, root)
+    async renderBranch(root)
     {
+        if (this.state.seed === undefined) {
+            console.error("No seed defined!")
+        }
+
         // handle graph update
         // we need to cache it to control updates to graphData
-        var newGraphData = this.state.graphData;
+        var newGraphData = structuredClone(this.state.graphData);
 
         // create a root if this is the first render
         if (root == undefined)
         {
-            root = await APIUtils.getRecommendations(seed, this.state.genre);
-            console.log("ROOT Album is " + APIUtils.recommendationToString(root));
+            //on root we need to disregard the placeholder TODO: make this nicer
+            newGraphData = emptyGraph;
 
-            newGraphData = this.addNewGraphNode(newGraphData, root, undefined, true); // trigger rerender for first node :D
+            var rootInfo = await APIUtils.getRecommendations(this.state.seed, this.state.genre);
+            console.log("ROOT Album is " + APIUtils.recommendationToString(rootInfo));
+            console.log(rootInfo)
+
+            newGraphData = await this.addNewGraphNode(newGraphData, rootInfo, undefined, true); // trigger rerender for first node :D
+            
+            root = rootInfo["name"];
         }
+
+        await this.preventReRender();
 
         // 1 child per genre
         for (var i = 0; i < NUM_GENRES; i++) {
-            let child = await APIUtils.getRecommendations(seed, genres[i]);
-            newGraphData = this.addNewGraphNode(newGraphData, child, root["name"], false);
+            let child = await APIUtils.getRecommendations(this.state.seed, this.state.genre[i]);
+            newGraphData = await this.addNewGraphNode(newGraphData, child, root, false);
         }
 
-        console.log("After click: This is the new graph");
-        console.log(newGraphData)
+        console.log("allow renders again!")
 
         this.setNewGraphState(newGraphData);
 
        // this.forceUpdate();
 
-    }
-
-    reseedOnClick = (parentRec, albumRec) =>
-    {
-        var seed = {
-            "seed": albumRec["name"],
-            "seed_artists": "",
-            "seed_tracks": ""
-        }
-        
-        seed.seed_artists = parentRec["artists"][0]["id"] + "," + albumRec["artists"][0]["id"];
-        seed.seed_tracks = parentRec["id"] + "," + albumRec["id"];
-
-        this.renderBranch(seed, albumRec);
     }
 
     /* Used on mount */
@@ -155,7 +165,7 @@ class Album_Result extends React.Component {
     {
         for (var album in album_map)
         {
-            var res = AlbumTraitUtil.albumTraitMatch(this.state.ratingMoods, album_map[album]);
+            var res = AlbumTraitUtil.albumTraitMatch(this.state.ratingMoods, album);
             if (res != undefined) //means match was found
             {
                 return res;
@@ -168,20 +178,21 @@ class Album_Result extends React.Component {
 
     async componentDidMount(){
         //this seed will be used to search tree
-        var seed = this.getSeed();
+        await this.setState(() => {
+            return ({
+                seed: this.getSeed()
+            })
+        });
 
-        await this.renderBranch(seed, undefined);
+        await this.renderBranch(undefined);
     }
 
     render() {
-        var seed = this.getSeeds(ratingMoods);
-
         return (
             <div>
                 <div>
                 <DynamicGraph 
                     graphData={this.state.graphData} 
-                    seed={seed} 
                     rerenderTrigger={this.renderBranch} />
                 </div>
             </div>

@@ -1,8 +1,10 @@
 export async function getRecommendations(seed, genreSeeds){
 
-    if (seed.seed == "NA"){
+    if (seed == "NA"){
         return -1;
     }
+
+    console.log(seed)
     var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
     
     var res =  await fetch(targetURL);
