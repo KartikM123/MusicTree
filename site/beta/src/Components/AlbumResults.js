@@ -176,7 +176,8 @@ class Album_Result extends React.Component {
                 <DynamicGraph 
                     graphData={this.state.graphData} 
                     graphDataDict={this.state.graphDataRef}
-                    rerenderTrigger={this.renderBranch} />
+                    rerenderTrigger={this.renderBranch}
+                    rendererConfig={{ preserveDrawingBuffer: true }} />
                 </div>
             </div>
         )
