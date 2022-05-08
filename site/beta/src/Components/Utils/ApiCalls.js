@@ -13,22 +13,20 @@ export async function getRecommendations(seed, genreSeeds){
     return resultObject;
 }
 
-export async function getAlbumImg(albumRec, albumImgs){
+export async function getAlbumImg(albumRec){
     if (albumRec == undefined) {
         return undefined;
     }
 
+    console.log("gettingAlbumImg")
+
     var trackID = albumRec["id"]
-    if (albumImgs[trackID] != undefined) {
-        return albumImgs[trackID]
-    }
+
     var targetURL = "http://localhost:9000/getSongs/getTrackPhoto?track_id="+trackID;
     var res =  await fetch(targetURL);
     
     var resultText = await res.text();
 
-    console.log(` got image ${resultText}`)
-    albumImgs[trackID] = resultText
     return resultText;
 }
 

@@ -57,7 +57,7 @@ class Album_Result extends React.Component {
         newGraphData.nodes.push({ id: albumName });
 
         // add to graph data dict for future reference
-        this.graphDataDict[albumName]  = albumNode;
+        this.graphDataDict[albumName]  = await APIUtils.getAlbumImg(albumNode);
 
         // link if parent
         if (parent != undefined) {
