@@ -19,6 +19,8 @@ export async function getAlbumImg(albumRec){
     var res =  await fetch(targetURL);
     
     var resultText = await res.text();
+
+    console.log(` got image ${resultText}`)
     return resultText;
 }
 
