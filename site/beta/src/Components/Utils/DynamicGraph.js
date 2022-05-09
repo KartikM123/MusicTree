@@ -1,43 +1,189 @@
 import React from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import structuredClone from '@ungap/structured-clone';
-import * as THREE from "three";
 
+import question_map from '../../Question_Data/questions.json'
+import album_map from '../../Question_Data/AlbumMapping.json'
+import * as APIUtils from './ApiCalls';
+import * as AlbumTraitUtil from './AlbumTraitMatch'
+
+const sampleGraph = {
+    nodes: [{ id: 'a' }, { id: 'b' }],
+    links: [
+        { source: 'a', target: 'b' }
+    ]
+};
+
+const emptyGraph = {
+    nodes: [],
+    links: [
+    ]
+};
+
+const NUM_GENRES = 3; // we currently support 3 genres 
 class DynamicGraph extends React.Component
 {
     constructor(props)
     {
         super(props)
         this.state = {
-            graphData: this.props.graphData,
+            graphData: {},
+            graphDataRef: {},
+            ratingMoods: this.getRatingMoods()
         }
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this)
         this.printOnUpdate = this.printOnUpdate.bind(this)
         this.renderedImages = {}
 
+        // handle initial render (personality --> album)
+        this.getSeed = this.getSeed.bind(this)
+
+        // handle graph state
+        this.renderBranch = this.renderBranch.bind(this)
+
+        // fancy magic to add data to/fro graph 
+        this.graphDataDict = {}
+        this.state.graphData = sampleGraph; // need to populate it with some garbage
+        this.setNewGraphState = this.setNewGraphState.bind(this);
+        this.addNewGraphNode = this.addNewGraphNode.bind(this);
+    }
+
+    async addNewGraphNode(newGraphData, albumNode, parent, rerender) {
+        // add as a node
+        var albumName = String(albumNode["name"]);
+        newGraphData.nodes.push({ id: albumName });
+
+        // add to graph data dict for future reference
+        this.graphDataDict[albumName]  = await APIUtils.getAlbumImg(albumNode);
+
+        // link if parent
+        if (parent != undefined) {
+            console.log(`creating root ${parent} to ${albumName}`)
+            newGraphData.links.push({ source: parent, target: albumName });
+        }
+
+        // rerender (true for initial)
+        if (rerender == true) {
+            console.log("rerender!")
+            await this.setNewGraphState(newGraphData);
+        }
+
+        // return to be used in future workflow
+        return newGraphData;
+    }
+    
+    async setNewGraphState(newGraphData) {
+        // this requires a special handler bc the api needs a clear before an update
+        await this.setState(() => {
+            return ({
+                graphData: newGraphData,
+                graphDataRef: this.graphDataDict,
+                color: 6//"#6134eb"
+            })
+        });
+    }
+
+    //seed: the data which is used to inform the search
+    //root: the parent of all children
+    async renderBranch(root)
+    {
+        if (this.state.seed === undefined) {
+            console.error("No seed defined!")
+        }
+
+        // handle graph update
+        // we need to cache it to control updates to graphData
+        var newGraphData = structuredClone(this.state.graphData);
+
+        // create a root if this is the first render
+        if (root == undefined)
+        {
+            //on root we need to disregard the placeholder TODO: make this nicer
+            newGraphData = emptyGraph;
+
+            var rootInfo = await APIUtils.getRecommendations(this.state.seed, this.props.genre);
+            console.log("ROOT Album is " + APIUtils.recommendationToString(rootInfo));
+            console.log(rootInfo)
+
+            newGraphData = await this.addNewGraphNode(newGraphData, rootInfo, undefined, true); // trigger rerender for first node :D
+            
+            root = rootInfo["name"];
+        }
+
+        // 1 child per genre
+        for (var i = 0; i < NUM_GENRES; i++) {
+            let child = await APIUtils.getRecommendations(this.state.seed, this.props.genre[i]);
+            newGraphData = await this.addNewGraphNode(newGraphData, child, root, false);
+        }
+
+        console.log("allow renders again!")
+
+        this.setNewGraphState(newGraphData);
+
+       // this.forceUpdate();
+
+    }
+
+    /* Used on mount */
+    getRatingMoods() {
+        let ratingMoods = [];
+        let Ratings = this.props.ratings;
+
+        for (var key in Ratings){
+            if (Ratings[key] > 3){
+                ratingMoods.push(question_map[key]["Positive"]);
+            } else {
+                ratingMoods.push(question_map[key]["Negative"]);
+            }
+        }
+
+        return ratingMoods;
+    }
+    
+    getSeed()
+    {
+        for (var album in album_map)
+        {
+            var res = AlbumTraitUtil.albumTraitMatch(this.state.ratingMoods, album);
+            if (res != undefined) //means match was found
+            {
+                return res;
+            }
+        }
+
+        console.log("no seeds found!")
+        return undefined;
+    }
+
+    async componentDidMount(){
+        //this seed will be used to search tree
+        await this.setState(() => {
+            return ({
+                seed: this.getSeed()
+            })
+        });
+
+        await this.renderBranch(undefined);
     }
 
     nodeClickHandler (node)
     {
-        console.log("Entered on click listeners!")
-        this.props.rerenderTrigger(node.id)
+        this.renderBranch(node.id)
     }
 
     // just organize helpers here
     printOnUpdate() {
 
-        console.log("new rea")
-        var graph = this.props.graphData;
-        console.log(graph["nodes"].length)
+        console.log("new render")
     }
    
     render() {
         this.printOnUpdate()
 
         //pass by reference so forcegraph doesn't update unless we want it to
-        let rawGraphData = structuredClone(this.props.graphData);
-        let rawGraphDataDict = structuredClone(this.props.graphDataDict);
+        let rawGraphData = structuredClone(this.state.graphData);
+        let rawGraphDataDict = structuredClone(this.state.graphDataRef);
         return (
                 <ForceGraph2D  
                 graphData={rawGraphData}
@@ -61,7 +207,6 @@ class DynamicGraph extends React.Component
                             this.renderedImages[node.id] = img;
                         } else {
                             try {
-                            console.log("cached picture!")
                             var img = this.renderedImages[node.id];
                             ctx.drawImage(img, node.x - 8, node.y - 5, 20, 20);
                             } catch(e) {
