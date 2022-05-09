@@ -162,7 +162,11 @@ class DynamicGraph extends React.Component
 
     nodeClickHandler (node)
     {
-        this.renderBranch(node.id)
+        if (this.props.clickHandler == 'print') {
+            console.log("printi")
+        } else {
+            this.renderBranch(node.id)
+        }
     }
 
     // just organize helpers here
@@ -172,7 +176,7 @@ class DynamicGraph extends React.Component
     }
    
     render() {
-        this.printOnUpdate()
+        //this.printOnUpdate()
 
         //pass by reference so forcegraph doesn't update unless we want it to
         let rawGraphData = structuredClone(this.state.graphData);
