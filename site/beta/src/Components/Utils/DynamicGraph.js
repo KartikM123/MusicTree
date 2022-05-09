@@ -7,13 +7,6 @@ import album_map from '../../Question_Data/AlbumMapping.json'
 import * as APIUtils from './ApiCalls';
 import * as AlbumTraitUtil from './AlbumTraitMatch'
 
-const sampleGraph = {
-    nodes: [{ id: 'a' }, { id: 'b' }],
-    links: [
-        { source: 'a', target: 'b' }
-    ]
-};
-
 const emptyGraph = {
     nodes: [],
     links: [
@@ -44,7 +37,7 @@ class DynamicGraph extends React.Component
 
         // fancy magic to add data to/fro graph 
         this.graphDataDict = {}
-        this.state.graphData = sampleGraph; // need to populate it with some garbage
+        this.state.graphData = emptyGraph; // need to populate it with some garbage
         this.setNewGraphState = this.setNewGraphState.bind(this);
         this.addNewGraphNode = this.addNewGraphNode.bind(this);
     }
