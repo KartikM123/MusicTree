@@ -6,6 +6,7 @@ import question_map from '../../Question_Data/questions.json'
 import album_map from '../../Question_Data/AlbumMapping.json'
 import * as APIUtils from './ApiCalls';
 import * as AlbumTraitUtil from './AlbumTraitMatch'
+import AlbumInfo from './AlbumInfo';
 
 const emptyGraph = {
     nodes: [],
@@ -22,7 +23,8 @@ class DynamicGraph extends React.Component
         this.state = {
             graphData: {},
             graphDataRef: {},
-            ratingMoods: this.getRatingMoods()
+            ratingMoods: this.getRatingMoods(),
+            printInfo: undefined
         }
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this)
@@ -48,7 +50,8 @@ class DynamicGraph extends React.Component
         newGraphData.nodes.push({ id: albumName });
 
         // add to graph data dict for future reference
-        this.graphDataDict[albumName]  = await APIUtils.getAlbumImg(albumNode);
+        this.graphDataDict[albumName]  =  albumNode;
+        this.graphDataDict[albumName]["imgUrl"] = await APIUtils.getAlbumImg(albumNode);
 
         // link if parent
         if (parent != undefined) {
@@ -163,6 +166,11 @@ class DynamicGraph extends React.Component
     nodeClickHandler (node)
     {
         if (this.props.clickHandler == 'print') {
+            this.setState(() => {
+                return {
+                    printInfo : this.state.graphDataRef[node.id]
+                }
+            })
             console.log("printi")
         } else {
             this.renderBranch(node.id)
@@ -177,11 +185,17 @@ class DynamicGraph extends React.Component
    
     render() {
         //this.printOnUpdate()
+        var infoPrint = <div></div>
+        if (this.state.printInfo != undefined) {
+            infoPrint = <AlbumInfo album={this.state.printInfo}/>
+        }
 
         //pass by reference so forcegraph doesn't update unless we want it to
         let rawGraphData = structuredClone(this.state.graphData);
         let rawGraphDataDict = structuredClone(this.state.graphDataRef);
         return (
+            <div>
+                {infoPrint}
                 <ForceGraph2D  
                 graphData={rawGraphData}
                 onNodeClick={this.nodeClickHandler}
@@ -193,7 +207,8 @@ class DynamicGraph extends React.Component
                         ctx.fillText(node.id,node.x,node.y);
                     } else {
                         if (this.renderedImages[node.id] == undefined) {
-                            var strDataURI = rawGraphDataDict[node.id]
+                            console.log(rawGraphDataDict[node.id])
+                            var strDataURI = rawGraphDataDict[node.id]["imgUrl"]
                             
                             var img = new Image();
                             img.onload = () => {
@@ -216,6 +231,7 @@ class DynamicGraph extends React.Component
                     // ctx.fillText(node.id,node.x,node.y);
                 } }
                   />
+            </div>
         )
     }
 }
