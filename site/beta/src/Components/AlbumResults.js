@@ -1,7 +1,6 @@
 import React from 'react';
 
 import '../StyleSheets/ComponentSheets/AlbumResults.css';
-import '../StyleSheets/general.css';
 
 import DynamicGraph from './Utils/DynamicGraph';
 
@@ -11,6 +10,7 @@ class Album_Result extends React.Component {
         //used for recommendation engine
         this.state = {
             clickHandler: '',
+            clickHandler: undefined,
             ...this.props.location.state
         }
 
@@ -18,9 +18,13 @@ class Album_Result extends React.Component {
     }
 
     printClickHandler() {
+        let newClick = undefined;
+        if (this.state.clickHandler == undefined) {
+            newClick = 'print'
+        }
         this.setState(() => {
             return ({
-                clickHandler: 'print'
+                clickHandler: newClick
             });
         });
     }
@@ -28,7 +32,7 @@ class Album_Result extends React.Component {
         return (
             <div>
                 <button onClick={this.printClickHandler}>
-                    hi
+                    toggle {this.state.clickHandler == undefined ? 'print' : 'populate'}
                 </button>
                 <div>
                 <DynamicGraph 

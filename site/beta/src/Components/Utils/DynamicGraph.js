@@ -6,7 +6,8 @@ import question_map from '../../Question_Data/questions.json'
 import album_map from '../../Question_Data/AlbumMapping.json'
 import * as APIUtils from './ApiCalls';
 import * as AlbumTraitUtil from './AlbumTraitMatch'
-import AlbumInfo from './AlbumInfo';
+
+import '../../StyleSheets/ComponentSheets/AlbumSnippet.css';
 
 const emptyGraph = {
     nodes: [],
@@ -15,6 +16,11 @@ const emptyGraph = {
 };
 
 const NUM_GENRES = 3; // we currently support 3 genres 
+
+const emptyAlbum = { "album": {
+    "name": ""
+}, "imgUrl": ""};
+
 class DynamicGraph extends React.Component
 {
     constructor(props)
@@ -24,8 +30,9 @@ class DynamicGraph extends React.Component
             graphData: {},
             graphDataRef: {},
             ratingMoods: this.getRatingMoods(),
-            printInfo: undefined
         }
+
+        this.printInfo = emptyAlbum;
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this)
         this.printOnUpdate = this.printOnUpdate.bind(this)
@@ -166,13 +173,11 @@ class DynamicGraph extends React.Component
     nodeClickHandler (node)
     {
         if (this.props.clickHandler == 'print') {
-            this.setState(() => {
-                return {
-                    printInfo : this.state.graphDataRef[node.id]
-                }
-            })
-            console.log("printi")
+            this.printInfo = this.state.graphDataRef[node.id]
+            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a href=\"https://open.spotify.com/album/${this.printInfo["album"]["href"]}\">${this.printInfo["album"]["name"]}</a>`
         } else {
+            document.getElementById('snippetInfo').innerHTML = ""
+
             this.renderBranch(node.id)
         }
     }
@@ -185,17 +190,14 @@ class DynamicGraph extends React.Component
    
     render() {
         //this.printOnUpdate()
-        var infoPrint = <div></div>
-        if (this.state.printInfo != undefined) {
-            infoPrint = <AlbumInfo album={this.state.printInfo}/>
-        }
 
         //pass by reference so forcegraph doesn't update unless we want it to
         let rawGraphData = structuredClone(this.state.graphData);
         let rawGraphDataDict = structuredClone(this.state.graphDataRef);
         return (
             <div>
-                {infoPrint}
+                <div id="snippetInfo" className='albumSnippet'>
+                </div>
                 <ForceGraph2D  
                 graphData={rawGraphData}
                 onNodeClick={this.nodeClickHandler}
