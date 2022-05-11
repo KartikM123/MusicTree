@@ -174,7 +174,7 @@ class DynamicGraph extends React.Component
     {
         if (this.props.clickHandler == 'print') {
             this.printInfo = this.state.graphDataRef[node.id]
-            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a href=\"https://open.spotify.com/album/${this.printInfo["album"]["href"]}\">${this.printInfo["album"]["name"]}</a>`
+            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a className=\"resetThis\" href=\"https://open.spotify.com/album/${this.printInfo["album"]["id"]}\">${this.printInfo["album"]["name"]}</a>`
         } else {
             document.getElementById('snippetInfo').innerHTML = ""
 
@@ -196,6 +196,7 @@ class DynamicGraph extends React.Component
         let rawGraphDataDict = structuredClone(this.state.graphDataRef);
         return (
             <div>
+                <button>export</button>
                 <div id="snippetInfo" className='albumSnippet'>
                 </div>
                 <ForceGraph2D  

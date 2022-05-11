@@ -1,6 +1,5 @@
 import React from 'react';
 
-import '../../StyleSheets/general.css';
 class AlbumInfo extends React.Component
 {
     render() {
