@@ -32,7 +32,9 @@ class DynamicGraph extends React.Component
             ratingMoods: this.getRatingMoods(),
         }
 
+        // onClick handlers
         this.printInfo = emptyAlbum;
+        this.exportHandler = this.exportHandler.bind(this);
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this)
         this.printOnUpdate = this.printOnUpdate.bind(this)
@@ -49,6 +51,7 @@ class DynamicGraph extends React.Component
         this.state.graphData = emptyGraph; // need to populate it with some garbage
         this.setNewGraphState = this.setNewGraphState.bind(this);
         this.addNewGraphNode = this.addNewGraphNode.bind(this);
+
     }
 
     async addNewGraphNode(newGraphData, albumNode, parent, rerender) {
@@ -182,6 +185,15 @@ class DynamicGraph extends React.Component
         }
     }
 
+    exportHandler() {
+        
+        let songIDList = []; // create playlist by id of each
+        Object.keys(this.state.graphDataRef).forEach((id) => {
+            const nodeInfo = this.state.graphDataRef[id];
+            songIDList.push(nodeInfo["id"])
+        })
+    }
+
     // just organize helpers here
     printOnUpdate() {
 
@@ -196,7 +208,7 @@ class DynamicGraph extends React.Component
         let rawGraphDataDict = structuredClone(this.state.graphDataRef);
         return (
             <div>
-                <button>export</button>
+                <button onClick={this.exportHandler}>export</button>
                 <div id="snippetInfo" className='albumSnippet'>
                 </div>
                 <ForceGraph2D  

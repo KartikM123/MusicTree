@@ -1,11 +1,13 @@
+import secrets from '../../../secrets.json'
+
 var express = require('express');
 var router = express.Router();
 let https = require('https');
 var request = require('request');
 
 //for second run
-let clientID = '70577384f8d644098aac77105315ed65';
-let clientSecret = '79ce048ea7e44d29958c36f5e6b4efae';
+let clientID = secrets["clientID"];
+let clientSecret = secrets["clientSecret"];
 let honneID = '0Vw76uk7P8yVtTClWyOhac'
 let massID = '4Aj5BsUYgadIeoC759FrhE'
 let massTrack = '4aX4Oycsk1fhHIee1zqsDe'
