@@ -12,9 +12,7 @@ let userID = secrets["userID"];
 let oauthToken = secrets["oauthToken"];
 
 router.get('/', function(req, res, next) {
-    console.log("Artists" + req.query.seed_artists);
-    console.log(req.query.seed_tracks);
-    getAuthorization((ac) => {getRecs(ac, req, res)},req,  res);
+    getAuthorization((ac) => {createPlaylist(ac, req, res)},req,  res);
 });
 
 async function getAuthorization (callback, req, res){
@@ -43,4 +41,22 @@ async function getAuthorization (callback, req, res){
             return null;
         }
     });
+}
+async function getRecs (ac, req, res) {
+    var recOptions = {
+        url: `https://api.spotify.com/v1/users/fishylishybishy/playlists`,
+        headers: {
+            'Authorization': 'Bearer ' + ac
+        },
+        body: {
+            "name": "New Playlist",
+            "description": "New playlist description",
+            "public": false
+        }
+    };
+    console.log(recOptions["url"])
+    request.post(recOptions, function(error, response, body) {
+        body = JSON.parse(body);
+        console.log(body)
+    })
 }
