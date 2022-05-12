@@ -1,62 +1,86 @@
-import secrets from '../../../secrets.json'
-
 var express = require('express');
 var router = express.Router();
 let https = require('https');
 var request = require('request');
-
+const secrets = require('./secrets.json');
+const queryString = require('query-string');
 //for second run
-let clientID = secrets["clientID"];
-let clientSecret = secrets["clientSecret"];
-let userID = secrets["userID"];
+let client_id = secrets["clientID"];
+let client_secret = secrets["clientSecret"];
+let user_id = secrets["userID"];
 let oauthToken = secrets["oauthToken"];
 
-router.get('/', function(req, res, next) {
-    getAuthorization((ac) => {createPlaylist(ac, req, res)},req,  res);
-});
+let redirect_uri = "http://localhost:9000/playlist/callback"
 
-async function getAuthorization (callback, req, res){
-    console.log("Authorizing!")
-    //authorize Spofity API
-    var authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
+router.get('/createPlaylist', function(req, res, next) {
+    var accessToken = req.query.accessToken
+    var createPlaylist = {
+        url: `https://api.spotify.com/v1/users/${user_id}/playlists`,
         headers: {
-            'Authorization': 'Basic ' + (new Buffer(clientID + ':' + clientSecret).toString('base64'))
-        },
-        form: {
-            grant_type: 'client_credentials'
-        },
-        json: true
-    };
-
-    await request.post(authOptions, function(error, response, body) {
-        console.log("here")
-        if (!error && response.statusCode === 200) {
-            // use the access token to access the Spotify Web API
-            console.log("Successfully Authorized!")
-            console.log(body.access_token);
-            return callback(body.access_token);
-        } else {
-            console.log(response.statusCode, " Failed Auth");
-            return null;
-        }
-    });
-}
-async function getRecs (ac, req, res) {
-    var recOptions = {
-        url: `https://api.spotify.com/v1/users/fishylishybishy/playlists`,
-        headers: {
-            'Authorization': 'Bearer ' + ac
+            'Authorization': 'Bearer ' + new Buffer(accessToken)
         },
         body: {
-            "name": "New Playlist",
-            "description": "New playlist description",
-            "public": false
+            "name": "Test Playlist",
+            "description": "Created using spotify api",
+            "public": true
         }
     };
-    console.log(recOptions["url"])
-    request.post(recOptions, function(error, response, body) {
-        body = JSON.parse(body);
+
+    request.post(createPlaylist, function(error, response, body) {
+        console.log(response)
+        res.send(body)
+    });
+})
+
+router.get('/', function(req, res, next) {
+    getAuthorization(res);
+});
+
+router.get('/callback', function(req, res, next) {
+    console.log("callback hit!");
+    console.log(req)
+    console.log(res)
+
+    var code = req.query.code || null;
+    var state = req.query.state || null;
+
+  if (state === null) {
+    console.log("no state!")
+  } else {
+      console.log("successful state found!")
+    var authOptions = {
+      url: 'https://accounts.spotify.com/api/token',
+      form: {
+        code: code,
+        redirect_uri: redirect_uri,
+        grant_type: 'authorization_code'
+      },
+      headers: {
+        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    },
+      json: true
+    };
+    request.post(authOptions, function(error, response, body) {
         console.log(body)
+        console.log(response)
+        res.send(body["access_token"])
     })
+  }
+});
+
+async function getAuthorization (res){
+    console.log("getting auth")
+    var state = "jkielaimndalimb";
+    var scope = 'playlist-modify-public playlist-modify-private';
+    console.log("hi" + redirect_uri)
+    res.redirect('https://accounts.spotify.com/authorize?' +
+    queryString.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
+    }));
 }
+
+module.exports = router;

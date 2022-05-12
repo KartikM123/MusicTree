@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@react-three/fiber": "^8.0.13",
-    "@ungap/structured-clone": "github:ungap/structured-clone"
+    "@ungap/structured-clone": "github:ungap/structured-clone",
+    "query-string": "^7.1.1"
   }
 }

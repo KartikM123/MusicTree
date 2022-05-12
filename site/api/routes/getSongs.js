@@ -1,9 +1,8 @@
-import secrets from '../../../secrets.json'
-
 var express = require('express');
 var router = express.Router();
 let https = require('https');
 var request = require('request');
+const secrets = require('./secrets.json');
 
 //for second run
 let clientID = secrets["clientID"];
