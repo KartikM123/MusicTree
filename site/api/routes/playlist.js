@@ -23,7 +23,8 @@ router.get('/createPlaylist', function(req, res, next) {
             "name": "Test Playlist",
             "description": "Created using spotify api",
             "public": true
-        }
+        },
+        json: true
     };
 
     request.post(createPlaylist, function(error, response, body) {
