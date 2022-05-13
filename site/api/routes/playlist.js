@@ -37,6 +37,32 @@ router.get('/', function(req, res, next) {
     getAuthorization(res);
 });
 
+
+router.get('/addToPlaylist', function(req, res , next) {
+    const uris = req.query.uris;
+    const playlist_id = req.query.playlist_id;
+    const accessToken = req.query.accessToken;
+
+    var addToPlaylist = {
+      url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?uris=${uris}`,
+      headers: {
+          'Authorization': 'Bearer ' + new Buffer(accessToken)
+      },
+      body: {
+          "name": "Test Playlist",
+          "description": "Created using spotify api",
+          "public": true
+      },
+      json: true
+  };
+
+  request.post(createPlaylist, function(error, response, body) {
+    console.log(response)
+    console.log(body)
+    res.send(body)
+  });
+}); 
+
 router.get('/callback', function(req, res, next) {
     console.log("callback hit!");
     console.log(req)

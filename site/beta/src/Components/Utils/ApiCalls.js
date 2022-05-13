@@ -30,6 +30,26 @@ export async function getAlbumImg(albumRec){
     return resultText;
 }
 
+export async function createPlaylist (playlistURIs) {
+    var authURL = "http://localhost:9000/playlist";
+    var accessToken =  await fetch(authURL);
+
+    console.log(accessToken)
+
+    var createPlaylistURL = "http://localhost:9000/playlist/createPlaylist?accessToken=" + accessToken;
+    var playlistPayload = await fetch(createPlaylistURL);
+
+    console.log(playlistPayload)
+
+    var playlistID = playlistPayload["id"]
+    var uris= playlistURIs.join(",")
+    var addToPlaylistURL = `http://localhost:9000/playlist/addToPlaylist?accessToken=${accessToken}&playlist_id=${playlistID}&uris=${uris}`;
+    
+    var addToPlaylistPayload = await fetch(addToPlaylistURL);
+
+    return playlistPayload["href"];
+}
+
 export const recommendationToString = (resultObject) => {
     return resultObject["name"] + " by " + resultObject["artists"][0]["name"];
 }

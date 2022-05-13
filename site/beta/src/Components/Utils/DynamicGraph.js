@@ -187,10 +187,16 @@ class DynamicGraph extends React.Component
 
     exportHandler() {
         
-        let songIDList = []; // create playlist by id of each
+        let songURIList = []; // create playlist by id of each
         Object.keys(this.state.graphDataRef).forEach((id) => {
             const nodeInfo = this.state.graphDataRef[id];
-            songIDList.push(nodeInfo["id"])
+            songURIList.push(nodeInfo["uri"])
+        })
+
+        console.log(songURIList);
+        APIUtils.createPlaylist(songURIList).then((res) => {
+            document.getElementById('snippetInfo').innerHTML = res;
+            console.log("here!");
         })
     }
 
