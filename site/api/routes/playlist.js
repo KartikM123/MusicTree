@@ -29,6 +29,7 @@ router.get('/createPlaylist', function(req, res, next) {
 
     request.post(createPlaylist, function(error, response, body) {
         console.log(response)
+        // save this responsein a firebase db thatwe will poll for
         res.send(body)
     });
 })
