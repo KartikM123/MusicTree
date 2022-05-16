@@ -52,6 +52,9 @@ class DynamicGraph extends React.Component
         this.setNewGraphState = this.setNewGraphState.bind(this);
         this.addNewGraphNode = this.addNewGraphNode.bind(this);
 
+        // save state for callbacks
+        // TODO
+
     }
 
     async addNewGraphNode(newGraphData, albumNode, parent, rerender) {
@@ -205,6 +208,13 @@ class DynamicGraph extends React.Component
 
         console.log("new render")
     }
+
+    // componentDidMount() {
+    //     console.log(' State : ')
+    //     console.log(this.state)
+    //     console.log(' Props : ')
+    //     console.log(this.props)
+    // }
    
     render() {
         //this.printOnUpdate()

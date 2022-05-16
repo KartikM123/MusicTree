@@ -29,13 +29,14 @@ router.get('/createPlaylist', function(req, res, next) {
 
     request.post(createPlaylist, function(error, response, body) {
         console.log(response)
+        console.log(body)
         // save this responsein a firebase db thatwe will poll for
         res.send(body)
     });
 })
 
-router.get('/', function(req, res, next) {
-    getAuthorization(res);
+router.get('/auth', function(req, res, next) {
+    getAuthorization(res, req);
 });
 
 
@@ -91,22 +92,26 @@ router.get('/callback', function(req, res, next) {
     request.post(authOptions, function(error, response, body) {
         console.log(body)
         console.log(response)
-        res.send(body["access_token"])
+        console.log("test")
+        res.send(response)
     })
   }
 });
 
-async function getAuthorization (res){
+async function getAuthorization (res, req){
     console.log("getting auth")
+
     var state = "jkielaimndalimb";
     var scope = 'playlist-modify-public playlist-modify-private';
-    console.log("hi" + redirect_uri)
+    var redirect = req.query.redirect
+    console.log(redirect)
+
     res.redirect('https://accounts.spotify.com/authorize?' +
     queryString.stringify({
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: redirect,
       state: state
     }));
 }

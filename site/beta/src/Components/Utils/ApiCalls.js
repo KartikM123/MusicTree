@@ -31,7 +31,8 @@ export async function getAlbumImg(albumRec){
 }
 
 export async function createPlaylist (playlistURIs) {
-    var authURL = "http://localhost:9000/playlist";
+    const redirectURL = "http://localhost:3000/album";
+    var authURL = `http://localhost:9000/playlist/auth?redirect=${redirectURL}`;
     var accessToken =  await fetch(authURL);
 
     console.log(accessToken)
