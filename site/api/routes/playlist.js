@@ -58,7 +58,7 @@ router.get('/addToPlaylist', function(req, res , next) {
       json: true
   };
 
-  request.post(createPlaylist, function(error, response, body) {
+  request.post(addToPlaylist, function(error, response, body) {
     console.log(response)
     console.log(body)
     res.send(body)

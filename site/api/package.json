@@ -16,6 +16,7 @@
     "morgan": "~1.9.1",
     "ms-rest-azure": "^3.0.0",
     "pug": "^3.0.0",
+    "react-spotify-auth": "^1.4.3",
     "request": "^2.88.2"
   }
 }

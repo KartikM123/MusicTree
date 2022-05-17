@@ -2,7 +2,6 @@ import React from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import structuredClone from '@ungap/structured-clone';
 
-import question_map from '../../Question_Data/questions.json'
 import album_map from '../../Question_Data/AlbumMapping.json'
 import * as APIUtils from './ApiCalls';
 import * as AlbumTraitUtil from './AlbumTraitMatch'
@@ -29,7 +28,7 @@ class DynamicGraph extends React.Component
         this.state = {
             graphData: {},
             graphDataRef: {},
-            ratingMoods: this.getRatingMoods(),
+            ratingMoods: this.props.ratingMoods,
         }
 
         // onClick handlers
@@ -138,16 +137,7 @@ class DynamicGraph extends React.Component
     getRatingMoods() {
         let ratingMoods = [];
         let Ratings = this.props.ratings;
-
-        for (var key in Ratings){
-            if (Ratings[key] > 3){
-                ratingMoods.push(question_map[key]["Positive"]);
-            } else {
-                ratingMoods.push(question_map[key]["Negative"]);
-            }
-        }
-
-        return ratingMoods;
+        return this.props.ratings;
     }
     
     getSeed()
@@ -197,7 +187,7 @@ class DynamicGraph extends React.Component
         })
 
         console.log(songURIList);
-        APIUtils.createPlaylist(songURIList).then((res) => {
+        APIUtils.createPlaylist(songURIList, this.props.accessToken).then((res) => {
             document.getElementById('snippetInfo').innerHTML = res;
             console.log("here!");
         })

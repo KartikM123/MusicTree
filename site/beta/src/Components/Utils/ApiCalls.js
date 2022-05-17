@@ -30,16 +30,16 @@ export async function getAlbumImg(albumRec){
     return resultText;
 }
 
-export async function createPlaylist (playlistURIs) {
-    const redirectURL = "http://localhost:3000/album";
-    var authURL = `http://localhost:9000/playlist/auth?redirect=${redirectURL}`;
-    var accessToken =  await fetch(authURL);
+export async function createPlaylist (playlistURIs, accessToken) {
+    // const redirectURL = "http://localhost:3000/album";
+    // var authURL = `http://localhost:9000/playlist/callback?redirect=${redirectURL}`;
+    // var accessToken =  await fetch(authURL);
 
     console.log(accessToken)
 
     var createPlaylistURL = "http://localhost:9000/playlist/createPlaylist?accessToken=" + accessToken;
     var playlistPayload = await fetch(createPlaylistURL);
-
+    playlistPayload = await playlistPayload.json()
     console.log(playlistPayload)
 
     var playlistID = playlistPayload["id"]
@@ -48,7 +48,7 @@ export async function createPlaylist (playlistURIs) {
     
     var addToPlaylistPayload = await fetch(addToPlaylistURL);
 
-    return playlistPayload["href"];
+    return playlistPayload["external_urls"]["spotify"];
 }
 
 export const recommendationToString = (resultObject) => {
