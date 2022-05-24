@@ -9,13 +9,14 @@ import '../StyleSheets/general.css'
 import '../StyleSheets/ComponentSheets/MoodResults.css'
 function importAll(r) {
     let images = {};
+    console.log("HUMBA")
     r.keys().map((item, index) => { images[item.replace('../', '')] = r(item); });
     console.log(images)
     console.log(r)
     return images;
   }
   
-  const images = importAll(require.context('../pngavatars', false, /\.(png|jpe?g|svg)$/));
+  const images = importAll(require.context('../pngavatars/gifs/', false, /\.(gif|jpe?g|svg)$/));
 class Bar extends React.Component
 {
     constructor(props)
@@ -161,7 +162,7 @@ class Avatar extends React.Component {
                 break;
             }
         }
-        let idealImage = avatar_map[avatar]["photoPath"].split("/")[2]
+        let idealImage = avatar_map[avatar]["photoPath"].split("/")[3]
 
         console.log(idealImage);
         console.log(images)
