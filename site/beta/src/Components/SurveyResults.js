@@ -17,6 +17,8 @@ function importAll(r) {
   }
   
   const images = importAll(require.context('../pngavatars/gifs/', false, /\.(gif|jpe?g|svg)$/));
+  const writeups = importAll(require.context('../writeups', false, /\.(txt)$/));
+
 class Bar extends React.Component
 {
     constructor(props)
@@ -100,6 +102,7 @@ class Avatar extends React.Component {
         this.getAvatar = this.getAvatar.bind(this)
 
         this.getAvatar();
+
     }
 
     getAvatar () {
@@ -135,6 +138,26 @@ class Avatar extends React.Component {
         return "No album";
     }
 
+    // async getAvatarDescription(avatar) {
+    //     let avatarPath = avatar.split(".")[0] + ".txt"; //<name>.gif ==> <name>.txt
+
+    //     let f = await fetch(writeups[`./${avatarPath}`]);
+    //     let totext = await f.text();
+
+    //     // prettyPrintText
+    //     let paragraphComponents = totext.split("|");
+    //     let renderedBody = (
+    //         <div>
+    //         <p> {paragraphComponents[0]}</p>
+    //         <br/>
+    //         <p className='highlight'> {paragraphComponents[1]} </p>
+    //         <br />
+    //         <p> {paragraphComponents[2]} </p>
+    //         </div>
+    //     );
+    //     this.props.avatarRef.current = renderedBody;
+    // }
+
     render(){
         var albumName  = "";
         var ratingMoods = this.props.ratingMoods;
@@ -163,7 +186,7 @@ class Avatar extends React.Component {
             }
         }
         let idealImage = avatar_map[avatar]["photoPath"].split("/")[3]
-
+        this.props.setAvatarDescription(idealImage);
         console.log(idealImage);
         console.log(images)
         return (
@@ -189,10 +212,12 @@ export class Survey_Result extends React.Component {
             typeCount: 0,
             questionCount: 0,
             initCondition: false,
-            imgUrl: 'None!'
+            imgUrl: 'None!',
+            avatarTextRef: undefined
         }
         this.state = this.props.location.state;
-        this.getRatingMoods = this.getRatingMoods.bind(this)
+        this.getRatingMoods = this.getRatingMoods.bind(this);
+        this.setAvatarDescription = this.setAvatarDescription.bind(this);
         this.printRatings();
     }
     printRatings(){
@@ -235,9 +260,36 @@ export class Survey_Result extends React.Component {
         }
         return arr;
     }
+
+    async setAvatarDescription(avatar) {
+        let avatarPath = avatar.split(".")[0] + ".txt"; //<name>.gif ==> <name>.txt
+
+        let f = await fetch(writeups[`./${avatarPath}`]);
+        let totext = await f.text();
+
+        // prettyPrintText
+        let paragraphComponents = totext.split("|");
+        let renderedBody = (
+            <div>
+            <p> {paragraphComponents[0]}</p>
+            <br/>
+            <p className='highlight'> {paragraphComponents[1]} </p>
+            <br />
+            <p> {paragraphComponents[2]} </p>
+            </div>
+        );
+        console.log("HERE")
+        this.setState(() =>
+        {
+            return {
+                avatarTextRef : renderedBody
+            }
+        });
+    }
+
     render() {
         let moods = this.toArr(this.getRatingMoods());
-        console.log("What?")
+        console.log(this.state.avatarTextRef)
         let moodsMap = this.getRatingMoods();
 
         return (
@@ -254,33 +306,28 @@ export class Survey_Result extends React.Component {
 />
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
 
-                <div className="leftSide">
-                <p className="personalityHeader"> Your music personality is : </p>
+                <div className="parentBox">
+                    <div className="leftSide">
+                        <p className="personalityHeader"> Your music personality is : </p>
 
-                <div id="avatarContainer">
-                    <Avatar ratingMoods={moodsMap}/>
-                </div>
+                        <div id="avatarContainer">
+                            <Avatar ratingMoods={moodsMap} setAvatarDescription={this.setAvatarDescription}/>
+                        </div>
 
-                </div>
-                <div className="rightSide">
-                    <BarContainer ratingMoods={moodsMap} />
-                    {/* <div id="moodsContainer">
-                        <ul>
-                            {moods.map((value,index) => {
-                                console.log(value);
-                            return  (<li>
-                                {value}
-                                </li>);
-                            })}
-                        </ul>
-                    </div> */}
+                    </div>
+                    <div className="rightSide">
+                        <BarContainer ratingMoods={moodsMap} />
+                    </div>                  
+                </div>          
+                <div className="avatarDescription" >
+                    {this.state.avatarTextRef}
+                </div> 
 
                 <div id="LinkContainer">
                     <Link to = {{pathname: '/genres',
                         state: this.state
                         }} > Pick your genres </Link>  
                 </div>
-                </div> 
             </div>
         )
 
