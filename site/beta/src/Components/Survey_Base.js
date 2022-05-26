@@ -115,7 +115,7 @@ class Survey extends React.Component {
     }
 
     clickN (){
-        let test = true;
+        let test = false;
         
         if (!this.checkStateDone()){
             // Do not go next if all questionsa re not done
@@ -152,11 +152,15 @@ class Survey extends React.Component {
             if (newTypeCount < this.state.allTypes.length){
                 newType =  this.state.allTypes[newTypeCount];
             } else {
+                console.log("done")
                 // finish questions right here
                 this.setState((state) => {
                     state.Ratings = newRatings;
                 })
+                console.log("here!")
                 this.finishedQuestions();
+
+                this.forceUpdate();
                 return;
             }
         
@@ -185,12 +189,12 @@ class Survey extends React.Component {
         if (this.state.initCondition) {
 
         
-        console.log("Redirect!");
+            console.log("Redirect!");
 
-        return <Redirect to={{
-            pathname: '/surveyResult',
-            state: this.state
-        }} />
+            return <Redirect to={{
+                pathname: '/surveyResult',
+                state: this.state
+            }} />
         } 
         console.log("RENDERING!");
         console.log((this.state.value/16)*10);
@@ -201,6 +205,12 @@ class Survey extends React.Component {
                 <img className ="bannerText" src ={images["./bText.svg"]} />
             </div>
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+                <link
+                        rel="stylesheet"
+                        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+                        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+                        crossorigin="anonymous"
+                        />
                 <ProgressBar variant="success" now={(this.state.value/16)*100} label={`${(this.state.value/16)*100}%`} />
                 <div className="questionStore">
                     <Question id = "first" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestions[0][0]} value={this.results[0]} uniqueId="1"/>
