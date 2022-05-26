@@ -4,7 +4,7 @@ import genresAll from '../Question_Data/SupportedGenres.json'
 import { Link } from 'react-router-dom';
 import { images } from './getImages';
 import ProgressBar from 'react-bootstrap/ProgressBar'
-import { Question } from './Utils/SurveyUtils.js'
+import { ProgressBarWrapper, Question } from './Utils/SurveyUtils.js'
 import { useHistory, Redirect } from 'react-router-dom';
 
 
@@ -29,7 +29,8 @@ class Survey extends React.Component {
             value: 0,
             imgUrl: 'None!',
             genre: ["","",""],
-            currGenre: 0
+            currGenre: 0,
+            value: 0
         }
 
         this.results =  [-1,-1,-1,-1];
@@ -40,12 +41,24 @@ class Survey extends React.Component {
 
         // interface with questions
         this.onChange = this.onChange.bind(this);
+
+
     }
 
     onChange(q, clicked)
     {
         // read value of the question when updated
         var ques = parseInt(q);
+
+        if (this.results[ques-1] == -1) 
+        {
+            //if clicked for first time show progress bar
+            this.setState(() => {
+                return {
+                    value: this.state.value++
+                }
+            })
+        }
 
         if (ques)
         {
@@ -180,7 +193,7 @@ class Survey extends React.Component {
         }} />
         } 
         console.log("RENDERING!");
-        console.log(this.state);
+        console.log((this.state.value/16)*10);
         return (
             <div className="Mood_Result">
             <div className="banner">
@@ -188,12 +201,12 @@ class Survey extends React.Component {
                 <img className ="bannerText" src ={images["./bText.svg"]} />
             </div>
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-
+                <ProgressBar variant="success" now={(this.state.value/16)*100} label={`${(this.state.value/16)*100}%`} />
                 <div className="questionStore">
-                    <Question id = "first" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestions[0][0]} uniqueId="1"/>
-                    <Question id = "second" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestions[1][0]} uniqueId="2"/>
-                    <Question id = "third" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestions[2][0]} uniqueId="3"/>
-                    <Question id = "fourth" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestions[3][0]} uniqueId="4"/>
+                    <Question id = "first" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestions[0][0]} value={this.results[0]} uniqueId="1"/>
+                    <Question id = "second" questionType={this.state.questionType} change={this.onChange}   currentQuestion={this.state.currentQuestions[1][0]} value={this.results[1]} uniqueId="2"/>
+                    <Question id = "third" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestions[2][0]} value={this.results[2]} uniqueId="3"/>
+                    <Question id = "fourth" questionType={this.state.questionType} change={this.onChange}  currentQuestion={this.state.currentQuestions[3][0]} value={this.results[3]} uniqueId="4"/>
                 </div>
                 <div className="centerDiv">
                 <a onClick={() => this.clickN()} >Next Set</a>

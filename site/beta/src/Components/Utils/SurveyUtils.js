@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 const disagreeStrong = "disagreeStrong"
 const disagreeMed = "disagreeMed";
@@ -9,6 +10,22 @@ const agreeStrong = "agreeStrong"
 const agreeMed = "agreeMed";
 const agreeLight = "agreeLight";
 
+export class ProgressBarWrapper extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+    }
+
+    render()
+    {
+        return(
+            <div className="pg">
+                <ProgressBar variant="success" now={(this.props.value/16)*100} label={`${(this.props.value/16)*100}%`} />
+            </div>
+        )
+    }
+}
 export class Question extends React.Component
 {
     getTarget (clicked)
@@ -122,6 +139,15 @@ export class Question extends React.Component
         }
         //this.forceUpdate();
 
+    }
+
+    componentDidUpdate()
+    {
+        console.log(this.props.value);
+        if (this.props.value != -1)
+        {
+            this.clickItem(this.props.value);
+        }
     }
 
     renderOptions()
