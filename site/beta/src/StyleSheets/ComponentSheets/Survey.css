@@ -8,6 +8,15 @@
     padding:2.5%;
 }
 
+.questionMid
+{
+    border-style: solid;
+    border-width: thin;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+}
+
 .questionText
 {
     font-family: "Open Sans";

@@ -157,8 +157,9 @@ export class Question extends React.Component
     render()
     {
         let range = [1,2,3,4,5]
+        let isMidClass = this.props.uniqueId == "4" ? "": " questionMid"
         return (
-            <div className = "questionWrapper">
+            <div className = {"questionWrapper" + isMidClass}>
                 <div className="questionText"> {this.props.currentQuestion}</div>
                 <div className="questionContent">
                     <div className= "disagree"> Disagree </div>
