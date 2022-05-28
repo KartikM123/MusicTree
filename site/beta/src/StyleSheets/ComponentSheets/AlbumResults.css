@@ -1,3 +1,7 @@
+.graphWrapper
+{
+    background-image: url('../../images/PersonalityBackground.svg');
+}
 .albumParent
 {
     display: block;

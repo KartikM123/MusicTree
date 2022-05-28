@@ -43,7 +43,6 @@ class Bar extends React.Component
         if (question_map[this.state.category]["Positive"] == this.state.rating)
         {
             posColor = this.props.color;
-            console.log("HERE!")
         } else 
         {
             negColor = this.props.color;
@@ -175,11 +174,6 @@ class Avatar extends React.Component {
             
             if (isCorrect){
                 console.log("Success!")
-                this.setState((state) =>
-                {
-                    state.avatar = avatar;
-                    state.avatarImg = avatar_map[avatar]["photoPath"];
-                });
                 console.log(avatar)
                 console.log(this.state)
                 break;
@@ -262,27 +256,19 @@ export class Survey_Result extends React.Component {
     }
 
     async setAvatarDescription(avatar) {
+        if (this.state.avatarTextRef != undefined)
+        {
+            return;
+        }
+
         let avatarPath = avatar.split(".")[0] + ".txt"; //<name>.gif ==> <name>.txt
 
         let f = await fetch(writeups[`./${avatarPath}`]);
         let totext = await f.text();
-
-        // prettyPrintText
-        let paragraphComponents = totext.split("|");
-        let renderedBody = (
-            <div>
-            <p> {paragraphComponents[0]}</p>
-            <br/>
-            <p className='highlight'> {paragraphComponents[1]} </p>
-            <br />
-            <p> {paragraphComponents[2]} </p>
-            </div>
-        );
-        console.log("HERE")
         this.setState(() =>
         {
             return {
-                avatarTextRef : renderedBody
+                avatarTextRef : totext
             }
         });
     }
@@ -290,20 +276,38 @@ export class Survey_Result extends React.Component {
     render() {
         let moods = this.toArr(this.getRatingMoods());
         console.log(this.state.avatarTextRef)
+        let refBody = <div></div>
+        if (this.state.avatarTextRef != undefined)
+        {
+            let totext = this.state.avatarTextRef;
+
+            // prettyPrintText
+            let paragraphComponents = totext.split("|");
+            refBody = (
+                <div>
+                <p> {paragraphComponents[0]}</p>
+                <br/>
+                <p className='highlight'> {paragraphComponents[1]} </p>
+                <br />
+                <p> {paragraphComponents[2]} </p>
+                </div>
+            );
+            console.log("HERE")
+        }
         let moodsMap = this.getRatingMoods();
 
         return (
             <div className="Mood_Result">
-            <div className="banner">
-                <img className="bannerLogo"src={images["./miniLogo.svg"]} />
-                <img className ="bannerText" src ={images["./bText.svg"]} />
-            </div>
+                <div className="banner">
+                    <img className="bannerLogo"src={images["./miniLogo.svg"]} />
+                    <img className ="bannerText" src ={images["./bText.svg"]} />
+                </div>
                 <link
-  rel="stylesheet"
-  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-  crossorigin="anonymous"
-/>
+                        rel="stylesheet"
+                        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+                        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+                        crossorigin="anonymous"
+                        />
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
 
                 <div className="parentBox">
@@ -320,7 +324,7 @@ export class Survey_Result extends React.Component {
                     </div>                  
                 </div>          
                 <div className="avatarDescription" >
-                    {this.state.avatarTextRef}
+                    {refBody}
                 </div> 
 
                 <div id="LinkContainer">

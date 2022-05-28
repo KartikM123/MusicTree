@@ -91,7 +91,7 @@ class Album_Result extends React.Component {
         </div>)
         }
         return (
-            <div>
+            <div className='graphWrapper'>
                 <button onClick={this.printClickHandler}>
                     toggle {this.state.clickHandler == undefined ? 'print' : 'populate'}
                 </button>

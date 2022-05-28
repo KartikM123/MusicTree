@@ -115,7 +115,7 @@ class Survey extends React.Component {
     }
 
     clickN (){
-        let test = false;
+        let test = true;
         
         if (!this.checkStateDone()){
             // Do not go next if all questionsa re not done
