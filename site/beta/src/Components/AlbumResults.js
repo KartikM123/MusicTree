@@ -81,8 +81,9 @@ class Album_Result extends React.Component {
     render() {
         console.log("render")
         console.log(this.accessToken);
+        let authShow = <div></div>
         if (this.accessToken == undefined){
-            return (<div>
+            authShow= (<div>
             <SpotifyAuth
                 redirectUri='http://localhost:3000/album'
                 clientID='70577384f8d644098aac77105315ed65'
@@ -92,6 +93,7 @@ class Album_Result extends React.Component {
         }
         return (
             <div className='graphWrapper'>
+                {authShow}
                 <button onClick={this.printClickHandler}>
                     toggle {this.state.clickHandler == undefined ? 'print' : 'populate'}
                 </button>

@@ -141,7 +141,7 @@ class DynamicGraph extends React.Component
     
     getSeed()
     {
-        var ratingMoodsSplit = (this.state.ratingMoods.split(','))
+        var ratingMoodsSplit = (this.state.ratingMoods)
         var seed = [];
         seed.push(mood_map["Mind"][ratingMoodsSplit[0]] + "=" + mood_map["Mind"]["value"])
         seed.push(mood_map["Energy"][ratingMoodsSplit[1]] + "=" + mood_map["Energy"]["value"])
@@ -209,9 +209,14 @@ class DynamicGraph extends React.Component
         //pass by reference so forcegraph doesn't update unless we want it to
         let rawGraphData = structuredClone(this.state.graphData);
         let rawGraphDataDict = structuredClone(this.state.graphDataRef);
+        let exportHandler = undefined;
+        if (this.props.accessToken != undefined)
+        {
+            exportHandler = <button onClick={this.exportHandler}>export</button>;
+        }
         return (
             <div>
-                <button onClick={this.exportHandler}>export</button>
+                {exportHandler}
                 <div id="snippetInfo" className='albumSnippet'>
                 </div>
                 <ForceGraph2D  
