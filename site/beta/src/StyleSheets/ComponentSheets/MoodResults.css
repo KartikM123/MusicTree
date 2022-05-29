@@ -6,7 +6,6 @@
 .Mood_Result {
     font-family: 'Open Sans';
     width: 100vw;
-    height: 100vh;
     background-image: url('../../images/PersonalityBackground.svg');
     background-size: cover;
     margin-top: 0 auto;
@@ -21,8 +20,8 @@
 .banner
 {
     text-align: center;
-    height:10%;
-    width: 100wh;
+    height:10vh;
+    width: 100vw;
     background-color:#9CC7A9;
 
 
@@ -34,10 +33,12 @@
 }
 .bannerLogo
 {
-    height: 60%;
-    float:left;
-    padding-top:1%;
-    padding-left:1%;
+    position: absolute;
+    top: 0;
+    height: 8vh;
+    margin-top: 1vh;
+    margin-left: 2vw;
+    left: 0;
 }
 
 #LinkContainer

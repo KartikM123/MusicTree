@@ -119,11 +119,15 @@ class DynamicGraph extends React.Component
             root = rootInfo["name"];
         }
 
-        var newSeed = structuredClone(this.state.seed);
-        //newSeed.push("seed_artists=" + )
+        // format seed artist
+        let newSeed = structuredClone(this.state.seed);
+        let seedArtistId = this.state.graphDataRef[root]["artists"][0]["id"];
+        newSeed.push("seed_artists=" + seedArtistId);
+        let seedTrackId = this.state.graphDataRef[root]["id"];
+        newSeed.push("seed_tracks=" + seedTrackId);
         // 1 child per genre
         for (var i = 0; i < NUM_GENRES; i++) {
-            let child = await APIUtils.getRecommendations(this.state.seed, this.props.genre[i]);
+            let child = await APIUtils.getRecommendations(newSeed, this.props.genre[i]);
             newGraphData = await this.addNewGraphNode(newGraphData, child, root, false);
         }
 
