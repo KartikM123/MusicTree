@@ -20,6 +20,12 @@ router.get('/getTrackPhoto', function(req, res, next) {
     getAuthorization((ac) => { getAlbumPhoto(ac, req, res)})
 });
 
+router.get('/v2', function(req, res, next) {
+    console.log("v2 hit!")
+    getAuthorization((ac) => {getRecsNew(ac, req, res)},req,  res);
+
+})
+// this is deprecated
 router.get('/', function(req, res, next) {
     console.log("Artists" + req.query.seed_artists);
     console.log(req.query.seed_tracks);
@@ -90,6 +96,7 @@ async function getRecs (ac, req, res) {
             'Authorization': 'Bearer ' + ac
         }
     };
+
     console.log(recOptions["url"])
     console.log("1")
     request.get(recOptions, function(error, response, body) {
@@ -112,6 +119,42 @@ async function getRecs (ac, req, res) {
             console.log("shit!");
             console.log(error);
             console.log(response.statusMessage)
+            res.send(response.statusCode)
+        }
+    });
+}
+
+async function getRecsNew (ac, req, res) {
+    console.log("Getting recs new!!")
+
+    //TODO replace this with something similar
+    var parsedQuery = new URLSearchParams(req.query);
+    console.log(parsedQuery.toString())
+    var recOptions = {
+        url: `https://api.spotify.com/v1/recommendations?${parsedQuery.toString()}`,
+        headers: {
+            'Authorization': 'Bearer ' + ac
+        }
+    };
+    console.log(recOptions["url"])
+    console.log("1")
+    request.get(recOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            console.log(response)
+
+        // use the access token to access the Spotify Web API
+        let total = "";
+        for (let i in JSON.parse(body)["tracks"][0]){
+            //console.log(i);
+            //console.log(JSON.parse(body)["tracks"][0][i])
+       }
+            console.log(JSON.parse(body)["tracks"][0])
+
+            console.log("Returning here!__");
+        
+            parseBestResult(req, res, JSON.parse(body));
+        } else {
+            console.log(response)
             res.send(response.statusCode)
         }
     });

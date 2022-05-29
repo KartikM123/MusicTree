@@ -2,7 +2,7 @@ import React from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import structuredClone from '@ungap/structured-clone';
 
-import album_map from '../../Question_Data/AlbumMapping.json'
+import mood_map from '../../Question_Data/MoodMapping.json'
 import * as APIUtils from './ApiCalls';
 import * as AlbumTraitUtil from './AlbumTraitMatch'
 
@@ -28,7 +28,7 @@ class DynamicGraph extends React.Component
         this.state = {
             graphData: {},
             graphDataRef: {},
-            ratingMoods: this.props.ratingMoods,
+            ratingMoods: this.props.ratings,
         }
 
         // onClick handlers
@@ -110,7 +110,7 @@ class DynamicGraph extends React.Component
             //on root we need to disregard the placeholder TODO: make this nicer
             newGraphData = emptyGraph;
 
-            var rootInfo = await APIUtils.getRecommendations(this.state.seed, this.props.genre);
+            var rootInfo = await APIUtils.getRecommendations(this.state.seed, this.props.genre[0]);
             console.log("ROOT Album is " + APIUtils.recommendationToString(rootInfo));
             console.log(rootInfo)
 
@@ -119,6 +119,8 @@ class DynamicGraph extends React.Component
             root = rootInfo["name"];
         }
 
+        var newSeed = structuredClone(this.state.seed);
+        //newSeed.push("seed_artists=" + )
         // 1 child per genre
         for (var i = 0; i < NUM_GENRES; i++) {
             let child = await APIUtils.getRecommendations(this.state.seed, this.props.genre[i]);
@@ -132,27 +134,18 @@ class DynamicGraph extends React.Component
        // this.forceUpdate();
 
     }
-
-    /* Used on mount */
-    getRatingMoods() {
-        let ratingMoods = [];
-        let Ratings = this.props.ratings;
-        return this.props.ratings;
-    }
     
     getSeed()
     {
-        for (var album in album_map)
-        {
-            var res = AlbumTraitUtil.albumTraitMatch(this.state.ratingMoods, album);
-            if (res != undefined) //means match was found
-            {
-                return res;
-            }
-        }
+        var ratingMoodsSplit = (this.state.ratingMoods.split(','))
+        var seed = [];
+        seed.push(mood_map["Mind"][ratingMoodsSplit[0]] + "=" + mood_map["Mind"]["value"])
+        seed.push(mood_map["Energy"][ratingMoodsSplit[1]] + "=" + mood_map["Energy"]["value"])
+        seed.push(mood_map["Romance"][ratingMoodsSplit[2]] + "=" + mood_map["Romance"]["value"])
+        seed.push(mood_map["Knowledge"][ratingMoodsSplit[3]] + "=" + mood_map["Knowledge"]["value"])
 
-        console.log("no seeds found!")
-        return undefined;
+        console.log(seed)
+        return seed;
     }
 
     async componentDidMount(){

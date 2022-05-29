@@ -1,0 +1,22 @@
+{
+    "Mind":{
+        "Conscious": "max_instrumentalness",
+        "Jovial": "min_instrumentalness",
+        "value": "0.6"
+    },
+    "Energy":{
+        "Energitic": "min_energy",
+        "Relaxed": "max_energy",
+        "value": "0.6"
+    },
+    "Romance": {
+        "Romantic": "min_valence",
+        "Heartbreak": "max_valence",
+        "value": "0.6"
+    },
+    "Knowledge": {
+        "Passionate": "min_popularity",
+        "Passive": "max_popularity",
+        "value": "60"
+    }
+}

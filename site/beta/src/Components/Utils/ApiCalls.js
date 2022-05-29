@@ -1,11 +1,15 @@
+import structuredClone from '@ungap/structured-clone';
+
 export async function getRecommendations(seed, genreSeeds){
 
     if (seed == "NA"){
         return -1;
     }
 
-    console.log(seed)
-    var targetURL = "http://localhost:9000/getSongs/?seed_artists="+seed.seed_artists + "&seed_tracks=" + seed.seed_tracks + "&seed_genres=" + genreSeeds
+    var totalSeed = structuredClone(seed);
+    totalSeed.push("seed_genres=" + genreSeeds.toLowerCase())
+
+    var targetURL = "http://localhost:9000/getSongs/v2?" + totalSeed.join("&");
     
     var res =  await fetch(targetURL);
 
