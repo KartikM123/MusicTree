@@ -2,6 +2,7 @@ import structuredClone from '@ungap/structured-clone';
 
 export async function getRecommendations(seed, genreSeeds){
 
+    console.log("polling rec")
     if (seed == "NA"){
         return -1;
     }
@@ -21,8 +22,6 @@ export async function getAlbumImg(albumRec){
     if (albumRec == undefined) {
         return undefined;
     }
-
-    console.log("gettingAlbumImg")
 
     var trackID = albumRec["id"]
 

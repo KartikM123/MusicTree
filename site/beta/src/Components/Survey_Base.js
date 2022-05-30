@@ -63,7 +63,6 @@ class Survey extends React.Component {
         if (ques)
         {
             this.results[ques-1] = clicked;
-            console.log(this.results);
         }
     }
 
@@ -142,7 +141,6 @@ class Survey extends React.Component {
             
             //update results based on currentQuestions
             let totalClick = this.results.reduce((a,b) => a + b, 0); // pos, neg, pos ,neg pattern
-            console.log(this.results);
             newRatings[newType] = totalClick/this.state.currentQuestions.length;
 
             console.log(newType + " finshed | rating: " + newRatings[newType] + " | total: " + totalClick);
@@ -152,12 +150,10 @@ class Survey extends React.Component {
             if (newTypeCount < this.state.allTypes.length){
                 newType =  this.state.allTypes[newTypeCount];
             } else {
-                console.log("done")
                 // finish questions right here
                 this.setState((state) => {
                     state.Ratings = newRatings;
                 })
-                console.log("here!")
                 this.finishedQuestions();
 
                 this.forceUpdate();
@@ -187,17 +183,11 @@ class Survey extends React.Component {
     render(){
 
         if (this.state.initCondition) {
-
-        
-            console.log("Redirect!");
-
             return <Redirect to={{
                 pathname: '/surveyResult',
                 state: this.state
             }} />
         } 
-        console.log("RENDERING!");
-        console.log((this.state.value/16)*10);
         return (
             <div className="Mood_Result">
             <div className="banner">

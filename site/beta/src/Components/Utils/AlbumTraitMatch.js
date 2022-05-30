@@ -16,7 +16,6 @@ export function albumTraitMatch(moods, album) {
     }
     if (isCorrect)
     {
-        //console.log("Identified seed album as " + album);
         res.seed_artists = albumInfo["seed_artists"];
         res.seed_tracks = albumInfo["seed_tracks"];
         res.seed = album;

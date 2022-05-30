@@ -38,6 +38,9 @@ class Album_Result extends React.Component {
                 throw new Error ("don't save this")
             }
             localStorage.setItem("locationState", JSON.stringify(locationState));
+
+            //indicates initial load
+            localStorage.removeItem("graphState");
             return locationState;
         } catch (e){
             return JSON.parse(localStorage.getItem("locationState"))
@@ -79,8 +82,6 @@ class Album_Result extends React.Component {
         });
     }
     render() {
-        console.log("render")
-        console.log(this.accessToken);
         let authShow = <div></div>
         if (this.accessToken == undefined){
             authShow= (<div>

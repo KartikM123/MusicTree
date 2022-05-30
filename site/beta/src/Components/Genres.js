@@ -41,7 +41,6 @@ export class Genre_Page extends React.Component
             });
         } else if (this.state.genre.length > 2)
         {
-            console.log("no more permitted");
             //should not be clicking a new genre at this point
             this.setState((state) => {
                 state.error = true;
@@ -55,7 +54,6 @@ export class Genre_Page extends React.Component
                 state.genre = newGenreList;
             });
         }
-        console.log(this.state.genre);
         this.forceUpdate();
     }
 

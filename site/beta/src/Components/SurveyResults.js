@@ -9,10 +9,7 @@ import '../StyleSheets/general.css'
 import '../StyleSheets/ComponentSheets/MoodResults.css'
 function importAll(r) {
     let images = {};
-    console.log("HUMBA")
     r.keys().map((item, index) => { images[item.replace('../', '')] = r(item); });
-    console.log(images)
-    console.log(r)
     return images;
   }
   
@@ -110,7 +107,6 @@ class Avatar extends React.Component {
         var usedKeys = ["Mind","Energy","Romance"]
         for (var avatar in avatar_map){
             var traits = avatar_map[avatar]["Mood"];
-            console.log(avatar_map[avatar]["Mood"])
             var isCorrect = true;
             for (var moods in usedKeys){
                 var mood = ratingMoods[usedKeys[moods]]
@@ -120,19 +116,16 @@ class Avatar extends React.Component {
             }
             
             if (isCorrect){
-                console.log("Success!")
                 this.setState((state) =>
                 {
                     state.avatar = avatar;
                     state.avatarImg = avatar_map[avatar]["photoPath"];
                 });
-                console.log(avatar)
-                console.log(this.state)
+
                 this.forceUpdate();
                 return;
             }
         }
-        console.log("Failure!")
 
         return "No album";
     }
@@ -163,7 +156,6 @@ class Avatar extends React.Component {
         var usedKeys = ["Mind","Energy","Romance"]
         for (var avatar in avatar_map){
             var traits = avatar_map[avatar]["Mood"];
-            console.log(avatar_map[avatar]["Mood"])
             var isCorrect = true;
             for (var moods in usedKeys){
                 var mood = ratingMoods[usedKeys[moods]]
@@ -173,16 +165,11 @@ class Avatar extends React.Component {
             }
             
             if (isCorrect){
-                console.log("Success!")
-                console.log(avatar)
-                console.log(this.state)
                 break;
             }
         }
         let idealImage = avatar_map[avatar]["photoPath"].split("/")[3]
         this.props.setAvatarDescription(idealImage);
-        console.log(idealImage);
-        console.log(images)
         return (
             <div>
                 <h1 className= "avatarName" >{avatar}</h1>

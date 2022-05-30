@@ -25,10 +25,21 @@ class DynamicGraph extends React.Component
     constructor(props)
     {
         super(props)
-        this.state = {
-            graphData: {},
-            graphDataRef: {},
-            ratingMoods: this.props.ratings,
+
+        let cachedState = localStorage.getItem("graphState");
+        if (cachedState != undefined)
+        {
+            console.log("loading cached state");
+            this.state = JSON.parse(cachedState);
+            console.log(this.state)
+        } else {
+            console.log("fresh load")
+            // store cached state
+            this.state = {
+                graphData: emptyGraph,
+                graphDataRef: {},
+                ratingMoods: this.props.ratings.split(","),
+            }
         }
 
         // onClick handlers
@@ -46,14 +57,12 @@ class DynamicGraph extends React.Component
         this.renderBranch = this.renderBranch.bind(this)
 
         // fancy magic to add data to/fro graph 
-        this.graphDataDict = {}
-        this.state.graphData = emptyGraph; // need to populate it with some garbage
+        this.graphDataDict = this.state.graphDataRef;
         this.setNewGraphState = this.setNewGraphState.bind(this);
         this.addNewGraphNode = this.addNewGraphNode.bind(this);
 
         // save state for callbacks
         // TODO
-
     }
 
     async addNewGraphNode(newGraphData, albumNode, parent, rerender) {
@@ -67,13 +76,11 @@ class DynamicGraph extends React.Component
 
         // link if parent
         if (parent != undefined) {
-            console.log(`creating root ${parent} to ${albumName}`)
             newGraphData.links.push({ source: parent, target: albumName });
         }
 
         // rerender (true for initial)
         if (rerender == true) {
-            console.log("rerender!")
             await this.setNewGraphState(newGraphData);
         }
 
@@ -88,8 +95,10 @@ class DynamicGraph extends React.Component
                 graphData: newGraphData,
                 graphDataRef: this.graphDataDict,
                 color: 6//"#6134eb"
-            })
+            });
         });
+
+        localStorage.setItem("graphState", JSON.stringify(this.state));
     }
 
     //seed: the data which is used to inform the search
@@ -111,8 +120,6 @@ class DynamicGraph extends React.Component
             newGraphData = emptyGraph;
 
             var rootInfo = await APIUtils.getRecommendations(this.state.seed, this.props.genre[0]);
-            console.log("ROOT Album is " + APIUtils.recommendationToString(rootInfo));
-            console.log(rootInfo)
 
             newGraphData = await this.addNewGraphNode(newGraphData, rootInfo, undefined, true); // trigger rerender for first node :D
             
@@ -131,8 +138,6 @@ class DynamicGraph extends React.Component
             newGraphData = await this.addNewGraphNode(newGraphData, child, root, false);
         }
 
-        console.log("allow renders again!")
-
         this.setNewGraphState(newGraphData);
 
        // this.forceUpdate();
@@ -148,19 +153,22 @@ class DynamicGraph extends React.Component
         seed.push(mood_map["Romance"][ratingMoodsSplit[2]] + "=" + mood_map["Romance"]["value"])
         seed.push(mood_map["Knowledge"][ratingMoodsSplit[3]] + "=" + mood_map["Knowledge"]["value"])
 
-        console.log(seed)
         return seed;
     }
 
     async componentDidMount(){
-        //this seed will be used to search tree
-        await this.setState(() => {
-            return ({
-                seed: this.getSeed()
-            })
-        });
+        // on reload this should be cached 
+        if (this.state.seed === undefined)
+        {
+            //this seed will be used to search tree
+            await this.setState(() => {
+                return ({
+                    seed: this.getSeed()
+                })
+            });
 
-        await this.renderBranch(undefined);
+            await this.renderBranch(undefined);
+        }
     }
 
     nodeClickHandler (node)
@@ -175,6 +183,8 @@ class DynamicGraph extends React.Component
         }
     }
 
+    befo
+
     exportHandler() {
         
         let songURIList = []; // create playlist by id of each
@@ -183,10 +193,8 @@ class DynamicGraph extends React.Component
             songURIList.push(nodeInfo["uri"])
         })
 
-        console.log(songURIList);
         APIUtils.createPlaylist(songURIList, this.props.accessToken).then((res) => {
             document.getElementById('snippetInfo').innerHTML = res;
-            console.log("here!");
         })
     }
 
@@ -213,7 +221,11 @@ class DynamicGraph extends React.Component
         if (this.props.accessToken != undefined)
         {
             exportHandler = <button onClick={this.exportHandler}>export</button>;
+            
+            // make sure we are no longer caching graphState
+            localStorage.removeItem("graphState");
         }
+
         return (
             <div>
                 {exportHandler}
@@ -230,14 +242,12 @@ class DynamicGraph extends React.Component
                         ctx.fillText(node.id,node.x,node.y);
                     } else {
                         if (this.renderedImages[node.id] == undefined) {
-                            console.log(rawGraphDataDict[node.id])
                             var strDataURI = rawGraphDataDict[node.id]["imgUrl"]
                             
                             var img = new Image();
                             img.onload = () => {
                                 ctx.drawImage(img, node.x - 8, node.y - 5, 20, 20);
                             };
-                            console.log(strDataURI)
                             img.src = strDataURI;
                             this.renderedImages[node.id] = img;
                         } else {
