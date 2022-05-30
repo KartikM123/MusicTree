@@ -21,7 +21,7 @@
 {
     font-family: "Open Sans";
     text-align:center;
-    font-size: 1.4em;
+    font-size: 2vmax;
     margin-bottom: 1%;
 
 }
@@ -105,7 +105,7 @@
     {
         border-color: #996767;
         
-        flex: 0 0 70px;
+        flex: 0 0 14%;
         height: 70px;
         max-width: 70px;
 
@@ -115,7 +115,7 @@
     {
         border-color: #996767;
 
-        flex: 0 0 55px;
+        flex: 0 0 14%;
         height: 55px;
         max-width: 55px;
 
@@ -125,7 +125,7 @@
     {    
         border-color: #996767;
 
-        flex: 0 0 45px;
+        flex: 0 0 14%;
         height: 45px;
         max-width: 45px;
     }
@@ -134,7 +134,7 @@
     {
         border-color: #9C9FA9;
 
-        flex: 0 0 35px;
+        flex: 0 0 14%;
         height: 35px;
         max-width: 35px;
 
@@ -144,7 +144,7 @@
     {
         border-color: #9CC7A9;
 
-        flex: 0 0 45px;
+        flex: 0 0 14%;
         height: 45px;
         max-width: 45px;
     }
@@ -154,7 +154,7 @@
         border-color: #9CC7A9;
 
 
-        flex: 0 0 55px;
+        flex: 0 0 14%;
         height: 55px;
         max-width: 55px;
     }
@@ -164,7 +164,7 @@
     {
         border-color: #9CC7A9;
         
-        flex: 0 0 70px;
+        flex: 0 0 14%;
         height: 70px;
         max-width: 70px;
     }
@@ -174,7 +174,7 @@
     {
         border-color: #996767;
         
-        flex: 0 0 45px;
+        flex: 0 0 14%;
         height: 45px;
         max-width: 45px;
 
@@ -184,7 +184,7 @@
     {
         border-color: #996767;
 
-        flex: 0 0 35px;
+        flex: 0 0 14%;
         height: 35px;
         max-width: 35px;
 
@@ -194,7 +194,7 @@
     {    
         border-color: #996767;
 
-        flex: 0 0 28px;
+        flex: 0 0 14%;
         height: 28px;
         max-width: 28px;
     }
@@ -294,7 +294,7 @@
 .questionStore
 {
     margin-top:2%;
-
+    margin-bottom: 3%;
 
 }
 
