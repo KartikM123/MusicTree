@@ -27,6 +27,12 @@ class DynamicGraph extends React.Component
         super(props)
 
         let cachedState = localStorage.getItem("graphState");
+        let ratings = "";
+        try {
+            ratings = this.props.ratings.split(",");
+        } catch(e) {
+            ratings = this.props.ratings;
+        }
         if (cachedState != undefined)
         {
             console.log("loading cached state");
@@ -38,7 +44,7 @@ class DynamicGraph extends React.Component
             this.state = {
                 graphData: emptyGraph,
                 graphDataRef: {},
-                ratingMoods: this.props.ratings.split(","),
+                ratingMoods: ratings,
             }
         }
 
@@ -47,6 +53,7 @@ class DynamicGraph extends React.Component
         this.exportHandler = this.exportHandler.bind(this);
 
         this.nodeClickHandler = this.nodeClickHandler.bind(this)
+        this.nodeHover = this.nodeHover.bind(this)
         this.printOnUpdate = this.printOnUpdate.bind(this)
         this.renderedImages = {}
 
@@ -173,17 +180,19 @@ class DynamicGraph extends React.Component
 
     nodeClickHandler (node)
     {
-        if (this.props.clickHandler == 'print') {
-            this.printInfo = this.state.graphDataRef[node.id]
-            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a className=\"resetThis\" href=\"https://open.spotify.com/album/${this.printInfo["album"]["id"]}\">${this.printInfo["album"]["name"]}</a>`
-        } else {
-            document.getElementById('snippetInfo').innerHTML = ""
-
-            this.renderBranch(node.id)
-        }
+        this.renderBranch(node.id)
     }
 
-    befo
+    nodeHover(curr, prev)
+    {
+        if (curr != null)
+        {
+            this.printInfo = this.state.graphDataRef[curr.id]
+            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a className=\"resetThis\" href=\"https://open.spotify.com/album/${this.printInfo["album"]["id"]}\">${this.printInfo["name"]}</a>`
+        } else {
+            document.getElementById('snippetInfo').innerHTML = "";
+        }
+    }
 
     exportHandler() {
         
@@ -234,6 +243,7 @@ class DynamicGraph extends React.Component
                 <ForceGraph2D  
                 graphData={rawGraphData}
                 onNodeClick={this.nodeClickHandler}
+                onNodeHover={this.nodeHover}
                 nodeCanvasObject={
                 async (node, ctx) => {
                     //ctx is of type CanvasRenderingContext2D

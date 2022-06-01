@@ -1,6 +1,8 @@
 .albumSnippet {
     width: 10vw;
     margin-bottom: 10px;
+    display: inline-block;
+    position: absolute;
   }
   .albumSnippet img{
     width: 100%

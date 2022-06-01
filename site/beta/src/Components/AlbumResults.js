@@ -81,6 +81,7 @@ class Album_Result extends React.Component {
             });
         });
     }
+    
     render() {
         let authShow = <div></div>
         if (this.accessToken == undefined){
@@ -95,9 +96,6 @@ class Album_Result extends React.Component {
         return (
             <div className='graphWrapper'>
                 {authShow}
-                <button onClick={this.printClickHandler}>
-                    toggle {this.state.clickHandler == undefined ? 'print' : 'populate'}
-                </button>
                 <div>
                 <DynamicGraph 
                     ratings={this.state.ratingMoods}
