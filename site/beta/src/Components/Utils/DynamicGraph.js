@@ -188,7 +188,9 @@ class DynamicGraph extends React.Component
         if (curr != null)
         {
             this.printInfo = this.state.graphDataRef[curr.id]
-            document.getElementById('snippetInfo').innerHTML = `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img> <a className=\"resetThis\" href=\"https://open.spotify.com/album/${this.printInfo["album"]["id"]}\">${this.printInfo["name"]}</a>`
+            document.getElementById('snippetInfo').innerHTML = `<a className=\"resetThis\" href=\"https://open.spotify.com/album/${this.printInfo["album"]["id"]}\">${this.printInfo["name"]}</a>`
+            document.getElementById('snippetInfo').innerHTML += `<img src=${this.printInfo["imgUrl"]} className='albumImg'></img>`
+
         } else {
             document.getElementById('snippetInfo').innerHTML = "";
         }
